@@ -1,0 +1,87 @@
+﻿
+@using Data.Modelues
+
+
+<CardButtonsFilters
+    Prams="Prams" />
+
+
+@code {
+    public DataListButton Models = new()
+    {
+        Title = "Select Model:",
+        Items = new List<DataUnifiedButton>
+        {
+            new DataUnifiedButton { Label = "GPT-4", IsActive = true },
+            new DataUnifiedButton { Label = "GPT-3.5" },
+            new DataUnifiedButton { Label = "LLaMA 2" },
+            new DataUnifiedButton { Label = "Claude 2" },
+            new DataUnifiedButton { Label = "PaLM 2" }
+        }
+    };
+
+
+    public DataListButton Filters = new()
+    {
+        Title = "Filter By:",
+        Items = new List<DataUnifiedButton>
+        {
+            new DataUnifiedButton { Label = "Featured", Icon = "fas fa-star", IsPrimary = true },
+            new DataUnifiedButton { Label = "Popular", Icon = "fas fa-fire" },
+            new DataUnifiedButton { Label = "New", Icon = "fas fa-bolt" },
+            new DataUnifiedButton { Label = "Trending", Icon = "fas fa-users" }
+        }
+    };
+
+    public DataListButton Categories = new()
+    {
+        Title = "Categories:",
+        Items = new List<DataUnifiedButton>
+        {
+            new DataUnifiedButton { Label = "All", IsPrimary = true },
+            new DataUnifiedButton { Label = "Writing", Icon = "fas fa-pen-fancy" },
+            new DataUnifiedButton { Label = "Art", Icon = "fas fa-paint-brush" },
+            new DataUnifiedButton { Label = "Video", Icon = "fas fa-video" },
+            new DataUnifiedButton { Label = "Audio", Icon = "fas fa-music" },
+            new DataUnifiedButton { Label = "Coding", Icon = "fas fa-code" },
+            new DataUnifiedButton { Label = "Chatbots", Icon = "fas fa-robot" }
+        }
+    };
+
+
+
+    [Parameter]
+    public DataCardListButtonModel? DataBuild { get; set; } 
+
+
+
+    private CardListUnifiedButtonModel Prams;
+
+    protected override void OnInitialized()
+    {
+        if (DataBuild == null && DataBuild.Items.Count==0){
+
+            DataBuild = new DataCardListButtonModel
+        {
+            Title = "Select Model:",
+            Description = "Select a model to get started. Choose from a variety of AI models to suit your needs.",
+            Name = "Select Model:",
+
+            Items = new List<DataListButton>
+            {
+                Models,
+                Filters,
+                Categories
+            },
+
+        };
+        }
+
+        Prams = CardListUnifiedButtonModel.Create(DataBuild);
+
+        Prams.ClassItem = "gdfgd";
+        base.OnInitialized();
+    }
+
+ 
+}

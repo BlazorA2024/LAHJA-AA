@@ -1,0 +1,29 @@
+﻿
+@using Data.Modelues
+  @if(Prams !=null){
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                        <span class="gradient-text">@Prams.DataBuild.Name</span> @Prams.DataBuild.Title
+                    </h2>
+                    <p class="text-lg text-gray-400 max-w-2xl mx-auto">
+                        @Prams.DataBuild.Description
+                    </p>
+                </div>
+}
+
+@foreach (var item in Prams.Items)
+{
+    <!-- تمرير العنصر الحالي من Prams إلى ButtonCard -->
+    <ButtonFiltersCard Prams="item" />
+}
+
+
+@code {
+  
+
+
+    [Parameter]
+
+     public CardListUnifiedButtonModel? Prams{ set; get; }
+
+}

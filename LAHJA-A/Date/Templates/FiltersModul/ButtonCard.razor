@@ -1,15 +1,15 @@
 ﻿ @using Data.Modelues
 @if(Prams !=null){
-@if (!string.IsNullOrEmpty(Prams.Label)) 
+@if (!string.IsNullOrEmpty(Prams.DataBuild.Label)) 
 {
     <button class="px-4 py-2 rounded-full transition
-                        @(Prams.IsPrimary ? "gradient-bg text-white hover:opacity-90" : "bg-dark-800 text-gray-300 hover:bg-dark-700 hover:text-white")
-                        @(Prams.IsActive ? " active-model" : "")">
-        @if (!string.IsNullOrEmpty(Prams.Icon))
+                                @(Prams.DataBuild.IsPrimary ? "gradient-bg text-white hover:opacity-90" : "bg-dark-800 text-gray-300 hover:bg-dark-700 hover:text-white")
+                                @(Prams.DataBuild.IsActive ? " active-model" : "")">
+            @if (!string.IsNullOrEmpty(Prams.DataBuild.Icon))
         {
-            <i class="@Prams.Icon mr-2"></i>
+                <i class="@Prams.DataBuild.Icon mr-2"></i>
         }
-        @Prams.Label
+            @Prams.DataBuild.Label
     </button>
 }
 }
