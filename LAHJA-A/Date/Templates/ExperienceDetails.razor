@@ -1,0 +1,114 @@
+﻿<!-- Experience Section -->
+<section id="experience" class="py-16 px-6">
+    <div class="container mx-auto">
+        <h2 class="text-3xl font-bold mb-12 text-center section-title">
+            <span class="gradient-text">Professional Experience</span>
+        </h2>
+
+        <div class="max-w-3xl mx-auto">
+            @if (Experiences != null && Experiences.Any())
+            {
+                @foreach (var experience in Experiences)
+                {
+                    <div class="relative pl-10 mb-12 timeline-item">
+                        <div class="absolute left-0 top-1 w-4 h-4 rounded-full bg-blue-500 border-4 border-slate-900"></div>
+                        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 glow-effect">
+                            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                                <h3 class="text-xl font-bold">@experience.Company</h3>
+                                <span class="text-sm bg-blue-900/30 text-blue-300 px-3 py-1 rounded-full">@experience.Period</span>
+                            </div>
+                            <h4 class="text-lg text-blue-300 mb-4">@experience.Position</h4>
+                            <div class="space-y-4">
+                                @foreach (var detail in experience.Details)
+                                {
+                                    <div class="flex items-start">
+                                        <i class="@detail.Icon mr-3 mt-1 text-blue-400"></i>
+                                        <p>@detail.Description</p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+
+@code {
+    public class ExperienceDetail
+    {
+        public string Icon { get; set; } = "";
+        public string Description { get; set; } = "";
+    }
+
+    public class ExperienceModel
+    {
+        public string Company { get; set; } = "";
+        public string Period { get; set; } = "";
+        public string Position { get; set; } = "";
+        public List<ExperienceDetail> Details { get; set; } = new();
+    }
+
+    private List<ExperienceModel> Experiences = new List<ExperienceModel>
+    {
+        new ExperienceModel
+        {
+            Company = "Bangkit Academy",
+            Period = "Nov 2022 - Nov 2023",
+            Position = "Mentor & Discord Moderator",
+            Details = new List<ExperienceDetail>
+            {
+                new ExperienceDetail
+                {
+                    Icon = "fas fa-graduation-cap",
+                    Description = "Android Developer Mentor with the highest graduation rate in class, helping 40+ students with various backgrounds and skill levels"
+                },
+                new ExperienceDetail
+                {
+                    Icon = "fas fa-users",
+                    Description = "Mentored 3 student groups in startup building from ideation through to securing investment funding"
+                },
+                new ExperienceDetail
+                {
+                    Icon = "fas fa-comments",
+                    Description = "Provided life advice and soft skills training during weekly meetings through storytelling and guided discussions"
+                },
+                new ExperienceDetail
+                {
+                    Icon = "fas fa-shield-alt",
+                    Description = "Discord Moderator for multiple cohorts, managing server activities, conflict resolution, online events, and community upkeep"
+                }
+            }
+        },
+        new ExperienceModel
+        {
+            Company = "PT. Vimayo",
+            Period = "Oct 2020 - Present",
+            Position = "On-Site Technician",
+            Details = new List<ExperienceDetail>
+            {
+                new ExperienceDetail
+                {
+                    Icon = "fas fa-file-excel",
+                    Description = "Created Excel automation solutions using VBA to streamline company workflows"
+                },
+                new ExperienceDetail
+                {
+                    Icon = "fas fa-tools",
+                    Description = "Solved miscellaneous technical and hardware issues as the primary on-site support technician"
+                },
+                new ExperienceDetail
+                {
+                    Icon = "fas fa-globe",
+                    Description = "Developed and managed company websites, handling both frontend and backend requirements"
+                },
+                new ExperienceDetail
+                {
+                    Icon = "fas fa-file-invoice-dollar",
+                    Description = "Compiled and organized tax reports, ensuring compliance with financial regulations"
+                }
+            }
+        }
+    };
+}

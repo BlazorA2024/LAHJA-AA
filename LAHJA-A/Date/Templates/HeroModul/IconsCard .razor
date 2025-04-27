@@ -1,0 +1,163 @@
+﻿@* @using Data.Modelues
+@foreach (var card in Prams)
+{
+    <div class="flex space-x-6 mb-8">
+        <a href="@card.Email" class="social-icon text-blue-400 text-2xl">
+            <i class="fas fa-envelope"></i>
+        </a>
+        <a href="@card.GithubUrl" target="_blank" class="social-icon text-slate-200 text-2xl">
+            <i class="fab fa-github"></i>
+        </a>
+        <a href="@card.LinkedinUrl" target="_blank" class="social-icon text-blue-500 text-2xl">
+            <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="@card.DiscordUrl" target="_blank" class="social-icon text-indigo-400 text-2xl">
+            <i class="fab fa-discord"></i>
+        </a>
+    </div>
+}
+@code {
+    public List<IconMediaCard> Prams = new List<IconMediaCard>
+    {
+        new IconMediaCard
+        {
+            Email = "mailto:@card.ContactEmail",
+            CssClass="",
+            Icon="",
+            Link="https://github.com/example",
+            // GithubUrl = "https://github.com/example",
+            // LinkedinUrl = "https://linkedin.com/in/example",
+            // DiscordUrl = "https://discordapp.com/users/example"
+        },
+        // إضافة المزيد من العناصر حسب الحاجة
+    };
+}
+ *@
+ @* @using Data.Modelues
+@if (Prams != null)
+{
+    @if (!string.IsNullOrEmpty(Prams.Label)) // لا تعرض الزر إلا إذا كان له Label
+    {
+        <div class="flex space-x-6 mb-8">
+
+            <a href="@Prams.Email" class="social-icon
+                        @(Prams.IsEmail ? "text-blue-400 text-2xl" : "")
+                        @(Prams.IsGit ? " text-slate-200 text-2xl" : "")
+                         @(Prams.IsLinkedin ? " text-blue-500 text-2xl" : "")
+                           @(Prams.IsDiscord ? " text-indigo-400 text-2xl" : "")">
+            @if (!string.IsNullOrEmpty(Prams.Icon))
+            {
+                <i class="@Prams.Icon mr-2"></i>
+            }
+            @Prams.Label
+        </a>
+        </div>
+    }
+}
+@code {
+    [Parameter] public UnifiedButtonModel? Prams { get; set; }
+    private List<UnifiedButtonModel> Filters = new()
+    {
+        new UnifiedButtonModel { Label = "Featured", Icon = "fas fa-envelope", IsPrimary = true },
+        new UnifiedButtonModel { Label = "Popular", Icon = "fas fa-fire" },
+        new UnifiedButtonModel { Label = "New", Icon = "fas fa-bolt" },
+        new UnifiedButtonModel { Label = "Trending", Icon = "fas fa-users" }
+    };
+    // public List<UnifiedButtonModel> Prams = new List<UnifiedButtonModel>
+    // {
+    //     new UnifiedButtonModel
+    //     {
+    //         Email = "mailto:@card.ContactEmail",
+    //         CssClass="",
+    //         Icon="",
+    //         Link="https://github.com/example",
+    //         // GithubUrl = "https://github.com/example",
+    //         // LinkedinUrl = "https://linkedin.com/in/example",
+    //         // DiscordUrl = "https://discordapp.com/users/example"
+    //     },
+    //     // إضافة المزيد من العناصر حسب الحاجة
+    // };
+} *@
+@* 
+@using Data.Modelues
+@if (Prams != null)
+{
+   
+        <div class="flex space-x-6 mb-8">
+
+            <a href="" class="social-icon
+                        @(Prams.IsEmail ? "text-blue-400 text-2xl" : "")
+                        @(Prams.IsGit ? " text-slate-200 text-2xl" : "")
+                         @(Prams.IsLinkedin ? " text-blue-500 text-2xl" : "")
+                           @(Prams.IsDiscord ? " text-indigo-400 text-2xl" : "")">
+                @if (!string.IsNullOrEmpty(Prams.Icon))
+                {
+                    <i class="@Prams.Icon "></i>
+                }
+               
+            </a>
+        </div>
+    
+}
+@code {
+    public class IconModuls 
+    {
+        public string Link { get; set; }
+        public bool IsEmail { get; set; }
+        public bool IsGit { get; set; }
+        public bool IsLinkedin { get; set; }
+        public bool IsDiscord { get; set; }
+        public string Icon { get; set; } = "";
+        public bool IsPrimary { get; set; } = false; // true = يستخدم جريدينت
+        public bool IsActive { get; set; } = false;  // لتفعيل الزر مثلاً
+    }
+
+ 
+        new UnifiedButtonModel { Link = "mailto:@card.ContactEmail", Icon = "fas fa-envelope", IsEmail = true },
+                new UnifiedButtonModel { Link = "https://github.com/example", Icon = "fab fa-github", IsIsGit = true },
+
+    
+    
+} *@
+
+@* 
+@using Data.Modelues
+
+@if (Prams != null)
+{
+        <a href="@Prams.Link" class="social-icon
+            @(Prams.IsEmail ? "text-blue-400 text-2xl" : "")
+            @(Prams.IsGit ? "text-slate-200 text-2xl" : "")
+            @(Prams.IsLinkedin ? "text-blue-500 text-2xl" : "")
+            @(Prams.IsDiscord ? "text-indigo-400 text-2xl" : "")">
+            @if (!string.IsNullOrEmpty(Prams.Icon))
+            {
+                <i class="@Prams.Icon"></i>
+            }
+        </a>
+  
+}
+
+@code {
+    
+    [Parameter] public HeroSectionModel? Prams { get; set; }
+}  *@
+
+@using Data.Modelues
+
+@if (Prams != null)
+{
+    <a href="@Prams.Link" class="@Prams.IconColr
+           ">
+        @if (!string.IsNullOrEmpty(Prams.Icon))
+        {
+            <i class="@Prams.Icon"></i>
+        }
+    </a>
+
+}
+
+@code {
+
+    [Parameter] public HeroSectionModel? Prams { get; set; }
+} 

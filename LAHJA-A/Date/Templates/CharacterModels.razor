@@ -1,0 +1,99 @@
+﻿<!-- AI Chat Section -->
+<section id="chat" class="py-16 bg-dark-800">
+    <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">
+            <span class="gradient-text">AI Chat</span> Experience
+        </h2>
+        <p class="text-lg text-gray-400 max-w-2xl mx-auto">
+            Interact with advanced AI characters and experience natural conversations
+        </p>
+    </div>
+    <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Character Selection -->
+        <div class="lg:w-1/4">
+            <div class="bg-dark-700 rounded-xl p-6 sticky top-24">
+                <h3 class="text-xl font-semibold text-white mb-4">AI Prams</h3>
+                <div class="space-y-3">
+                    @if (Prams != null && Prams.Any())
+                    {
+                        @foreach (var character in Prams)
+                        {
+                            <div class="flex items-center p-3 rounded-lg bg-dark-800 hover:bg-dark-600 cursor-pointer transition @(character.IsSelected ? "selected-character" : "")">
+                                <img src="@character.ImageUrl" alt="@character.Name" class="w-12 h-12 rounded-full object-cover mr-3">
+                                <div>
+                                    <h4 class="font-medium text-white">@character.Name</h4>
+                                    <p class="text-sm text-gray-400">@character.Description</p>
+                                </div>
+                            </div>
+                        }
+                    }
+
+                    <!-- Add Character Button -->
+                    <button class="w-full mt-4 p-3 rounded-lg border-2 border-dashed border-dark-600 hover:border-purple-500 text-gray-400 hover:text-purple-400 transition flex items-center justify-center">
+                        <i class="fas fa-plus mr-2"></i> Add Custom Character
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    public class CharacterModel
+    {
+        public string Name { get; set; } = "";
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string ImageUrl { get; set; } = "";
+        public bool IsSelected { get; set; } = false;
+    }
+    // private List<CharacterModel> Pramss = new List<CharacterModel>
+    // {
+    //      new CharacterModel
+    //     {
+    //         Name = "AI Chat",
+    //         Title ="Experience",
+    //         Description = " Interact with advanced AI characters and experience natural conversations",
+    //     },
+    // };
+    private List<CharacterModel> Prams = new List<CharacterModel>
+    {
+       
+        new CharacterModel
+        {
+            Name = "Dr. Sarah Chen",
+            Description = "Medical Researcher",
+            ImageUrl = "https://randomuser.me/api/portraits/women/44.jpg",
+            IsSelected = true
+        },
+        new CharacterModel
+        {
+            Name = "Professor James Wilson",
+            Description = "History Expert",
+            ImageUrl = "https://randomuser.me/api/portraits/men/32.jpg",
+            IsSelected = false
+        },
+        new CharacterModel
+        {
+            Name = "Emma, the Creative Writer",
+            Description = "Storytelling AI",
+            ImageUrl = "https://randomuser.me/api/portraits/women/68.jpg",
+            IsSelected = false
+        },
+        new CharacterModel
+        {
+            Name = "CodeMaster Alex",
+            Description = "Programming Assistant",
+            ImageUrl = "https://randomuser.me/api/portraits/men/75.jpg",
+            IsSelected = false
+        }
+    };
+}
+@* <div class="text-center mb-12">
+    <h2 class="text-3xl md:text-4xl font-bold mb-4">
+        <span class="gradient-text">AI Chat</span> Experience
+    </h2>
+    <p class="text-lg text-gray-400 max-w-2xl mx-auto">
+        Interact with advanced AI characters and experience natural conversations
+    </p>
+</div> *@

@@ -1,0 +1,91 @@
+﻿
+@using Data.Modelues
+  @if(Prams !=null){
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                        <span class="gradient-text">@Prams.Name</span> @Prams.Title
+                    </h2>
+                    <p class="text-lg text-gray-400 max-w-2xl mx-auto">
+                        @Prams.Description
+                    </p>
+                </div>
+}
+
+<!-- موديلات -->
+<FiltersCard Prams="Models" />
+
+<!-- فلاتر -->
+<FiltersCard Prams="Filters" />
+
+<!-- تصنيفات -->
+<FiltersCard Prams="Categories" />
+
+@code {
+    private HeaderModel Prams = new HeaderModel
+        {
+            Name = "AI Tools",
+            Title = "Collection",
+            Description = "Browse through hundreds of AI tools categorized for your convenience",
+        };
+    private List<UnifiedButtonModel> Models = new()
+    {
+        new UnifiedButtonModel { Title="Select Model:"},
+        new UnifiedButtonModel { Label = "GPT-4", IsActive = true },
+        new UnifiedButtonModel { Label = "GPT-3.5" },
+        new UnifiedButtonModel { Label = "LLaMA 2" },
+        new UnifiedButtonModel { Label = "Claude 2" },
+        new UnifiedButtonModel { Label = "PaLM 2" }
+    };
+
+    private List<UnifiedButtonModel> Filters = new()
+    {
+        new UnifiedButtonModel {Title="Filter By:"},
+        new UnifiedButtonModel { Label = "Featured", Icon = "fas fa-star", IsPrimary = true },
+        new UnifiedButtonModel { Label = "Popular", Icon = "fas fa-fire" },
+        new UnifiedButtonModel { Label = "New", Icon = "fas fa-bolt" },
+        new UnifiedButtonModel { Label = "Trending", Icon = "fas fa-users" }
+    };
+
+    private List<UnifiedButtonModel> Categories = new()
+    {
+        new UnifiedButtonModel { Title="Categories:"},
+        new UnifiedButtonModel { Label = "All", IsPrimary = true },
+        new UnifiedButtonModel { Label = "Writing", Icon = "fas fa-pen-fancy" },
+        new UnifiedButtonModel { Label = "Art", Icon = "fas fa-paint-brush" },
+        new UnifiedButtonModel { Label = "Video", Icon = "fas fa-video" },
+        new UnifiedButtonModel { Label = "Audio", Icon = "fas fa-music" },
+        new UnifiedButtonModel { Label = "Coding", Icon = "fas fa-code" },
+        new UnifiedButtonModel { Label = "Chatbots", Icon = "fas fa-robot" }
+    };
+}
+@* 
+private List<HeaderModel> Models = new()
+    {
+        new HeaderModel { Title="Select Model:"},
+        new HeaderModel { Name = "GPT-4", CssClass = "" },
+        new HeaderModel { Name = "GPT-3.5" },
+        new HeaderModel { Name = "LLaMA 2" },
+        new HeaderModel { Name = "Claude 2" },
+        new HeaderModel { Name = "PaLM 2" }
+    };
+
+    private List<HeaderModel> Filters = new()
+    {
+        new HeaderModel {Title="Filter By:"},
+        new HeaderModel { Name = "Featured", Icon = "fas fa-star", CssClass = "px-4 py-2 rounded-full gradient-bg text-white hover:opacity-90 transition " },
+        new HeaderModel { Name = "Popular", Icon = "fas fa-fire" },
+        new HeaderModel { Name = "New", Icon = "fas fa-bolt" },
+        new HeaderModel { Name = "Trending", Icon = "fas fa-users" }
+    };
+
+    private List<HeaderModel> Categories = new()
+    {
+        new HeaderModel { Title="Categories:"},
+        new HeaderModel { Name = "All", CssClass = "px-4 py-2 rounded-full gradient-bg text-white hover:opacity-90 transition" },
+        new HeaderModel { Name = "Writing", Icon = "fas fa-pen-fancy" },
+        new HeaderModel { Name = "Art", Icon = "fas fa-paint-brush" },
+        new HeaderModel { Name = "Video", Icon = "fas fa-video" },
+        new HeaderModel { Name = "Audio", Icon = "fas fa-music" },
+        new HeaderModel { Name = "Coding", Icon = "fas fa-code" },
+        new HeaderModel { Name = "Chatbots", Icon = "fas fa-robot" }
+    }; *@

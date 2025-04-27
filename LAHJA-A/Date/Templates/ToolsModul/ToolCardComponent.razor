@@ -1,0 +1,43 @@
+﻿@using Data.Modelues
+@* <div class="bg-dark-800 rounded-xl overflow-hidden shadow-lg card-hover animate-card card-delay-1">
+    <div class="p-5">
+        <div class="flex items-center mb-4">
+            <div class="w-12 h-12 rounded-lg gradient-bg flex items-center justify-center text-white mr-4">
+                <i class="fas fa-pen-fancy text-xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-white">AI Writer Pro</h3>
+        </div>
+        <p class="text-gray-400 mb-6">Advanced AI writing assistant for content creation, blogging, and copywriting.</p>
+        <div class="flex justify-between items-center">
+            <span class="text-sm text-purple-400"><i class="fas fa-bolt mr-1"></i> GPT-4</span>
+            <button class="px-4 py-2 rounded-lg gradient-bg text-white hover:opacity-90 transition text-sm">
+                Try Now
+            </button>
+        </div>
+    </div>
+</div> *@
+    @foreach (var card in Prams)
+    {
+        <div class="bg-dark-800 rounded-xl overflow-hidden shadow-lg card-hover animate-card">
+            <div class="p-5">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 rounded-lg gradient-bg flex items-center justify-center text-white mr-4">
+                        <i class="@card.Icon text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-white">@card.Title</h3>
+                </div>
+                <p class="text-gray-400 mb-6">@card.Description</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-purple-400"><i class="fas fa-bolt mr-1"></i> @card.Model</span>
+                    <button class="px-4 py-2 rounded-lg gradient-bg text-white hover:opacity-90 transition text-sm">
+                        @card.ButtonLabel
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+<!-- Wasm -->
+    
+@code {
+    [Parameter] public List<ToolCard> Prams { get; set; }
+}

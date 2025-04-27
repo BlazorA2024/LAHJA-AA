@@ -1,0 +1,32 @@
+﻿@using Data.Modelues
+
+@code {
+    private HeroSectionModel heroData = new HeroSectionModel
+        {
+            Name = "Pandu Dhaulagiri",
+            Title = "AI Engineer & Creative Technologist",
+            Description = "Building unconventional systems at the intersection of AI, gaming, and interactive storytelling. Passionate about reverse engineering, local AI systems, and creating unique digital experiences.",
+            ContactEmail = "pandudparadox@gmail.com",
+            ContactLink = "#contact",
+            ImageUrl = "https://via.placeholder.com/150"
+        };
+    // private List<HeroSectionModel> rams = new()
+    //     {
+    //     new HeroSectionModel { Link = "mailto:@card.ContactEmail0-" ,IsEmail = true , Icon = "fas fa-envelope"},
+    //     new HeroSectionModel { Link = "https://github.com/example",IsGit = true,Icon = "fab fa-github" },
+    //     new HeroSectionModel { Link = "https://linkedin.com/in/pandu-dhaulagiri",IsLinkedin = true ,Icon = "fab fa-linkedin" },
+    //     new HeroSectionModel { Link = "https://discordapp.com/users/example" ,IsDiscord = true, Icon = "fab fa-discord" }
+
+    //     };
+    private List<HeroSectionModel> rams = new()
+        {
+        new HeroSectionModel { Link = "mailto:@card.ContactEmail0-" ,IconColr = "social-icon text-blue-400 text-2xl" , Icon = "fas fa-envelope"},
+        new HeroSectionModel { Link = "https://github.com/example",IconColr = "social-icon text-slate-200 text-2xl",Icon = "fab fa-github" },
+        new HeroSectionModel { Link = "https://linkedin.com/in/pandu-dhaulagiri",IconColr = "social-icon text-blue-500 text-2xl" ,Icon = "fab fa-linkedin" },
+        new HeroSectionModel { Link = "https://discordapp.com/users/example" ,IconColr = "social-icon text-indigo-400 text-2xl", Icon = "fab fa-discord" }
+
+        };
+    
+}
+
+<HeroCardComponent Prams="heroData" Pram="rams" />

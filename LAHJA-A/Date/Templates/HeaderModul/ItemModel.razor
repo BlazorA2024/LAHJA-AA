@@ -1,0 +1,14 @@
+﻿@using Data.Modelues
+@code {
+    [Parameter]
+    public HeaderModel Prams { get; set; }
+}
+
+<div class="text-center mb-12">
+    <h2 class="text-3xl md:text-4xl font-bold mb-4">
+        <span class="gradient-text">@Prams.Name</span> @Prams.Title
+    </h2>
+    <p class="text-lg text-gray-400 max-w-2xl mx-auto">
+        @Prams.Description
+    </p>
+</div>
