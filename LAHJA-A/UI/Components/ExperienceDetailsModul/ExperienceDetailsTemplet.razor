@@ -1,0 +1,98 @@
+﻿@using Data.ExperienceDetails
+
+<!-- Experience Section -->
+
+<ExperienceDetails2Card Prams="Prams" />
+
+
+@code {
+  
+
+    private List<DataListExperienceDetailsModel> Experiences = new List<DataListExperienceDetailsModel>
+    {
+        new DataListExperienceDetailsModel
+        {
+            Company = "Bangkit Academy",
+            Period = "Nov 2022 - Nov 2023",
+            Position = "Mentor & Discord Moderator",
+            Items = new List<DataUnifiedExperienceDetails>
+            {
+                new DataUnifiedExperienceDetails
+                {
+                    Icon = "fas fa-graduation-cap",
+                    Description = "Android Developer Mentor with the highest graduation rate in class, helping 40+ students with various backgrounds and skill levels"
+                },
+                new DataUnifiedExperienceDetails
+                {
+                    Icon = "fas fa-users",
+                    Description = "Mentored 3 student groups in startup building from ideation through to securing investment funding"
+                },
+                new DataUnifiedExperienceDetails
+                {
+                    Icon = "fas fa-comments",
+                    Description = "Provided life advice and soft skills training during weekly meetings through storytelling and guided discussions"
+                },
+                new DataUnifiedExperienceDetails
+                {
+                    Icon = "fas fa-shield-alt",
+                    Description = "Discord Moderator for multiple cohorts, managing server activities, conflict resolution, online events, and community upkeep"
+                }
+            }
+        },
+        new DataListExperienceDetailsModel
+        {
+            Company = "PT. Vimayo",
+            Period = "Oct 2020 - Present",
+            Position = "On-Site Technician",
+            Items = new List<DataUnifiedExperienceDetails>
+            {
+                new DataUnifiedExperienceDetails
+                {
+                    Icon = "fas fa-file-excel",
+                    Description = "Created Excel automation solutions using VBA to streamline company workflows"
+                },
+                new DataUnifiedExperienceDetails
+                {
+                    Icon = "fas fa-tools",
+                    Description = "Solved miscellaneous technical and hardware issues as the primary on-site support technician"
+                },
+                new DataUnifiedExperienceDetails
+                {
+                    Icon = "fas fa-globe",
+                    Description = "Developed and managed company websites, handling both frontend and backend requirements"
+                },
+                new DataUnifiedExperienceDetails
+                {
+                    Icon = "fas fa-file-invoice-dollar",
+                    Description = "Compiled and organized tax reports, ensuring compliance with financial regulations"
+                }
+            }
+        }
+    };
+    [Parameter]
+    public DataCardListExperienceDetailsModel? DataBuild { get; set; }
+
+
+
+    private CardListUnifiedExperienceDetailsModel Prams;
+
+    protected override void OnInitialized()
+    {
+        if (DataBuild == null)
+        {
+
+            DataBuild = new DataCardListExperienceDetailsModel
+                {
+                    Name = "Professional Experience",
+                    Items = Experiences,
+
+
+                };
+        }
+
+        Prams = CardListUnifiedExperienceDetailsModel.Create(DataBuild);
+
+        // Prams.ClassItem = "gdfgd";
+        base.OnInitialized();
+    }
+}

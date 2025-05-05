@@ -1,0 +1,93 @@
+﻿@using LAHJA_A.UI.Components.SpectralAnalyzer.CardControls
+@using dApp.Spectral
+
+<CardAddControlsFrequency Prams="Prams" />
+
+
+@code {
+    private List<DataAddSpectral> Spectral = new List<DataAddSpectral>
+    {
+           new DataAddSpectral
+        {
+            Name="Spectral Analyzer",
+            Description="Real-time audio frequency visualization",
+            IAnal =new()
+            {
+                IDiv = new ()
+                {
+                    "w-3 h-3 rounded-full bg-red-500",
+                    "w-3 h-3 rounded-full bg-yellow-500",
+                    "w-3 h-3 rounded-full bg-green-500"
+                },
+                Title="Waiting for input...",
+            },
+            IControls = new (){
+                Name="Controls",
+                Icon="fas fa-microphone",
+                Title="Start Analysis",
+            ISizes= new()
+            {
+
+                    Name = "FFT Size",
+                    Sizes = new (){ 64, 128, 256, 512, 1024, 2048, 4096 },
+                    SelectedValue = 256,
+            },
+            IVolume= new()
+            {
+                    Name = "Volume",
+                    Volume=0.0,
+                    Icon="fas fa-volume-up"
+            },
+               ISharp = new()
+               {
+                   Name="Smoothing",
+                   Value=0.6,
+                   Sharp="Sharp",
+                   Smooth="Smooth"
+
+
+               },
+
+         },
+          Ifreq = new()
+            {
+                Name="Frequency Details",
+
+             //Items =new List<DataFrequency>
+             Items = new List<DataFrequency>
+                    {
+                        new DataFrequency { Label = "Dominant Freq", Value = "0 Hz" },
+                        new DataFrequency { Label = "Bass (20-250Hz)", Value = "0.00" },
+                        new DataFrequency { Label = "Mid (250-4kHz)", Value = "0.00" },
+                        new DataFrequency { Label = "Treble (4k-20kHz)", Value = "0.00" }
+                    },
+
+
+             },
+
+           // Items = new List<DataCardListModulw>()
+        }
+    };
+
+    [Parameter]
+    public DataAddSpectral? DataBuild { get; set; }
+
+    [Parameter]
+    public CardListDataAddSpectral Prams { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        if (DataBuild == null)
+        {
+            DataBuild = Spectral[0];
+
+        }
+
+        Prams = CardListDataAddSpectral.Create(DataBuild);
+        base.OnInitialized();
+    }
+}
+<script>
+ 
+</script>

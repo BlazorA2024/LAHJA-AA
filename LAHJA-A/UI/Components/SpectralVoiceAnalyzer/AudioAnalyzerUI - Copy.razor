@@ -1,0 +1,18 @@
+﻿@using LAHJA_A.UI.Components.SpectralVoiceAnalyzer.CardAddControl
+@using Data.SpectralVoice
+ <div class="container mx-auto px-4 py-8">
+        <header class="mb-8 text-center">
+            <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">
+                Spectral Voice Analyzer
+            </h1>
+            <p class="text-gray-400">Real-time frequency analysis of your voice</p>
+        </header>
+<AudioAnalyzerUI Prams="Prams" />
+
+</div>
+
+@code {
+    [Parameter] public CardListDataAddSpectral? Prams { get; set; }
+
+    
+}

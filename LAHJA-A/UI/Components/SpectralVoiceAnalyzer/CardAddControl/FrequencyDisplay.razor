@@ -1,0 +1,35 @@
+﻿@* 
+<div class="mt-6 p-4 bg-gray-700 rounded-lg">
+    <h3 class="text-sm font-medium mb-2 text-gray-300">Current Frequency</h3>
+    <div class="flex items-end">
+        <span id="dominantFreq" class="text-3xl font-bold mr-2">0</span>
+        <span class="text-lg">Hz</span>
+    </div>
+</div>
+@code {
+}
+ *@
+
+@using Data.SpectralVoice
+
+<div class="mt-6 p-4 bg-gray-700 rounded-lg">
+    <h3 class="text-sm font-medium mb-2 text-gray-300">@Prams.DataBuild.Title</h3>
+    <div class="flex items-end">
+        <span class="text-3xl font-bold mr-2">@Prams.DataBuild.Frequency</span>
+        <span class="text-lg">Hz</span>
+    </div>
+</div>
+
+@code {
+    [Parameter] public ListDataFrequency Prams { get; set; }
+
+    // عند التهيئة نقوم بإعداد التردد
+    // protected override void OnInitialized()
+    // {
+    //     // إنشاء مثيل من DataFrequency
+    //     Prams = new ListDataFrequency
+    //         {
+    //           Prams.DataBuild.Frequency = 440.0 // قيمة تردد افتراضية، يمكن تغييرها
+    //         };
+    // }
+}

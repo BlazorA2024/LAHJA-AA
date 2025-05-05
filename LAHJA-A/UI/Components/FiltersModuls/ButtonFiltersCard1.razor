@@ -1,0 +1,62 @@
+﻿@using Data.FiltersModul
+@using Microsoft.AspNetCore.Components
+
+@if (Prams != null )
+{
+    <div class="mb-8">
+        @if (!string.IsNullOrEmpty(Prams.DataBuild.Title))
+        {
+            <h3 class="text-lg font-medium text-gray-300 mb-3">@Prams.DataBuild.Title</h3>
+        }
+
+        <div class="flex flex-wrap gap-3">
+            @foreach (var item in Prams.Items) 
+            {
+                <!-- تمرير العنصر الحالي من Prams إلى ButtonCard -->
+                <ButtonCard1 Prams="item" />  
+            }
+        </div>
+    </div>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    [Parameter] public ListUnifiedButtonModel? Prams { get; set; }
+    <!-- تأكد من أن Prams هي قائمة من العناصر -->
+}
+  
+@* 
+
+@using Data.Modelues
+@using Microsoft.AspNetCore.Components
+
+@if (Prams != null && Prams.Any())
+{
+    <div class="mb-8">
+        @if (!string.IsNullOrEmpty(Prams.First().Title))
+        {
+            <h3 class="text-lg font-medium text-gray-300 mb-3">@Prams.First().Title</h3>
+        }
+
+        <div class="flex flex-wrap gap-3">
+            @foreach (var item in Prams)
+            {
+                <!-- تمرير العنصر الحالي من Prams إلى ButtonCard -->
+                <ButtonCard Prams="item" />
+            }
+        </div>
+    </div>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    [Parameter] public List<HeaderModel>? Prams { get; set; }
+      <!-- تأكد من أن Prams هي قائمة من العناصر -->
+}
+ *@

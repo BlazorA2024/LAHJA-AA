@@ -1,4 +1,4 @@
-﻿ @using Data.Modelues
+﻿@*  @using Data.Modelues
 @if(Prams !=null){
 @if (!string.IsNullOrEmpty(Prams.DataBuild.Label)) 
 {
@@ -17,7 +17,7 @@
 @code {
     [Parameter] public UnifiedButtonModel? Prams { get; set; }
 }
- 
+  *@
 @* 
  @using Data.Modelues
 @if (Prams != null)

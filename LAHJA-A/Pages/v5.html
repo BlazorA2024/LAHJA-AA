@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spectral Voice Analyzer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes pulse {
+            0% {
+                opacity: 0.4;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.4;
+            }
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+
+        canvas {
+            background: linear-gradient(to bottom, #1e3a8a, #0f172a);
+        }
+
+        .bar-container {
+            height: 250px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 2px;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+
+        .frequency-bar {
+            background: linear-gradient(to top, #3b82f6, #93c5fd);
+            width: 8px;
+            border-radius: 4px 4px 0 0;
+            transition: height 0.1s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="mb-8 text-center">
+            <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">
+                Spectral Voice Analyzer
+            </h1>
+            <p class="text-gray-400">Real-time frequency analysis of your voice</p>
+        </header>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+            <div class="lg:w-1/3 bg-gray-800 rounded-lg p-6 shadow-lg">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-semibold">Controls</h2>
+                    <div id="status" class="flex items-center">
+                        <span class="h-3 w-3 rounded-full bg-red-500 mr-2"></span>
+                        <span class="text-sm">Inactive</span>
+                    </div>
+                </div>
+
+
+                <button id="toggleMic" class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium mb-4 flex items-center justify-center">
+                    <i class="fas fa-microphone mr-2"></i>
+                    Start Analyzer
+                </button>
+
+                <div class="bg-gray-700 p-4 rounded-lg mb-4">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-sm text-gray-300">Input Level</span>
+                        <span id="inputLevel" class="text-sm font-mono">0%</span>
+                    </div>
+                    <div class="h-2.5 w-full bg-gray-600 rounded-full">
+                        <div id="levelMeter" class="h-2.5 bg-green-500 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <span class="text-sm text-gray-300 block mb-1">Frequency Range</span>
+                        <select id="frequencyRange" class="w-full bg-gray-800 text-white rounded px-3 py-2 text-sm outline-none">
+                            <option value="full">Full Spectrum</option>
+                            <option value="voice">Voice Range (80-300Hz)</option>
+                            <option value="high">High Frequencies</option>
+                            <option value="low">Low Frequencies</option>
+                        </select>
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <span class="text-sm text-gray-300 block mb-1">Visual Style</span>
+                        <select id="visualStyle" class="w-full bg-gray-800 text-white rounded px-3 py-2 text-sm outline-none">
+                            <option value="bars">Bars</option>
+                            <option value="wave">Waveform</option>
+                            <option value="circle">Circular</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 bg-gray-700 rounded-lg">
+                    <h3 class="text-sm font-medium mb-2 text-gray-300">Current Frequency</h3>
+                    <div class="flex items-end">
+                        <span id="dominantFreq" class="text-3xl font-bold mr-2">0</span>
+                        <span class="text-lg">Hz</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:w-2/3">
+                <div class="bg-gray-800 rounded-lg overflow-hidden shadow-lg">
+                    <div class="bg-gradient-to-b from-gray-700 to-gray-800">
+                        <canvas id="visualizer" class="w-full h-64 lg:h-96"></canvas>
+                    </div>
+                    <div class="p-4 flex justify-between items-center border-t border-gray-700">
+                        <div class="text-sm text-gray-400">
+                            <span>FFT Size: </span>
+                            <select id="fftSize" class="bg-gray-700 text-white rounded px-2 py-1 text-sm outline-none">
+                                <option value="64">64</option>
+                                <option value="128">128</option>
+                                <option value="256" selected>256</option>
+                                <option value="512">512</option>
+                                <option value="1024">1024</option>
+                            </select>
+                        </div>
+                        <div id="fpsCounter" class="text-sm text-gray-400">FPS: 0</div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <h3 class="text-lg font-medium mb-2 text-gray-300">Frequency Distribution</h3>
+                    <div id="barVisualizer" class="bar-container">
+                        <!-- Bars will be generated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-12 text-center text-sm text-gray-500">
+            <p>Speak into your microphone to see real-time spectral analysis</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Audio context and nodes
+            let audioContext;
+            let analyser;
+            let microphone;
+            let isActive = false;
+            let lastTime = 0;
+            let frames = 0;
+            let lastFpsUpdate = 0;
+            let fftSize = 256;
+            let barCount = 32;
+
+            // DOM elements
+            const toggleMicBtn = document.getElementById('toggleMic');
+            const statusElement = document.getElementById('status');
+            const inputLevelElement = document.getElementById('inputLevel');
+            const levelMeterElement = document.getElementById('levelMeter');
+            const visualizerCanvas = document.getElementById('visualizer');
+            const visualizerCtx = visualizerCanvas.getContext('2d');
+            const barVisualizer = document.getElementById('barVisualizer');
+            const dominantFreqElement = document.getElementById('dominantFreq');
+            const fftSizeSelect = document.getElementById('fftSize');
+            const frequencyRangeSelect = document.getElementById('frequencyRange');
+            const visualStyleSelect = document.getElementById('visualStyle');
+            const fpsCounter = document.getElementById('fpsCounter');
+
+            // Frequency data arrays
+            let frequencyData;
+            let timeDomainData;
+
+            // Initialize bars
+            const bars = [];
+            for (let i = 0; i < barCount; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'frequency-bar';
+                bar.style.height = '0px';
+                barVisualizer.appendChild(bar);
+                bars.push(bar);
+            }
+
+            // Resize canvas
+            function resizeCanvas() {
+                visualizerCanvas.width = visualizerCanvas.offsetWidth;
+                visualizerCanvas.height = visualizerCanvas.offsetHeight;
+            }
+
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            // FPS counter
+            function updateFps() {
+                const now = performance.now();
+                frames++;
+
+                if (now >= lastFpsUpdate + 1000) {
+                    fpsCounter.textContent = `FPS: ${Math.round(frames * 1000 / (now - lastFpsUpdate))}`;
+                    frames = 0;
+                    lastFpsUpdate = now;
+                }
+            }
+
+            // Visualizer functions
+            function drawBars() {
+                const width = visualizerCanvas.width;
+                const height = visualizerCanvas.height;
+                const barWidth = width / barCount;
+                let maxFreq = 0;
+
+                visualizerCtx.clearRect(0, 0, width, height);
+
+                for (let i = 0; i < barCount; i++) {
+                    const value = frequencyData[i] || 0;
+                    const percent = value / 255;
+                    const barHeight = percent * height;
+                    maxFreq = Math.max(maxFreq, value);
+
+                    // Set color based on frequency band
+                    const hue = 240 - (i / barCount * 240);
+                    visualizerCtx.fillStyle = `hsl(${hue}, 100%, 60%)`;
+
+                    // Draw bar
+                    visualizerCtx.fillRect(
+                        i * barWidth,
+                        height - barHeight,
+                        barWidth * 0.8,
+                        barHeight
+                    );
+                }
+
+                // Update the bars in the secondary visualizer
+                for (let i = 0; i < barCount; i++) {
+                    const value = frequencyData[i] || 0;
+                    const percent = value / 255;
+                    bars[i].style.height = `${percent * 100}%`;
+                }
+
+                // Find dominant frequency
+                let maxIndex = 0;
+                let maxValue = 0;
+                for (let i = 0; i < frequencyData.length; i++) {
+                    if (frequencyData[i] > maxValue) {
+                        maxValue = frequencyData[i];
+                        maxIndex = i;
+                    }
+                }
+
+                // Calculate dominant frequency in Hz
+                const sampleRate = audioContext.sampleRate;
+                const dominantFrequency = maxIndex * sampleRate / fftSize;
+
+                if (dominantFrequency > 50 && dominantFrequency < 4000) {
+                    dominantFreqElement.textContent = Math.round(dominantFrequency);
+                }
+            }
+
+            function drawWaveform() {
+                const width = visualizerCanvas.width;
+                const height = visualizerCanvas.height;
+                const centerY = height / 2;
+
+                visualizerCtx.clearRect(0, 0, width, height);
+
+                visualizerCtx.beginPath();
+                visualizerCtx.strokeStyle = '#3b82f6';
+                visualizerCtx.lineWidth = 2;
+
+                for (let i = 0; i < timeDomainData.length; i++) {
+                    const x = i / timeDomainData.length * width;
+                    const y = (timeDomainData[i] / 255) * height;
+
+                    if (i === 0) {
+                        visualizerCtx.moveTo(x, y);
+                    } else {
+                        visualizerCtx.lineTo(x, y);
+                    }
+                }
+
+                visualizerCtx.stroke();
+            }
+
+            function drawCircle() {
+                const width = visualizerCanvas.width;
+                const height = visualizerCanvas.height;
+                const centerX = width / 2;
+                const centerY = height / 2;
+                const radius = Math.min(width, height) * 0.4;
+
+                visualizerCtx.clearRect(0, 0, width, height);
+
+                // Draw frequency data as a circular spectrum
+                visualizerCtx.beginPath();
+
+                for (let i = 0; i < frequencyData.length; i++) {
+                    const angle = (i / frequencyData.length) * Math.PI * 2;
+                    const value = frequencyData[i] / 255;
+                    const pointRadius = radius * (1 + value * 0.5);
+
+                    const x = centerX + Math.cos(angle) * pointRadius;
+                    const y = centerY + Math.sin(angle) * pointRadius;
+
+                    if (i === 0) {
+                        visualizerCtx.moveTo(x, y);
+                    } else {
+                        visualizerCtx.lineTo(x, y);
+                    }
+                }
+
+                visualizerCtx.closePath();
+                visualizerCtx.fillStyle = 'rgba(59, 130, 246, 0.5)';
+                visualizerCtx.fill();
+                visualizerCtx.strokeStyle = '#3b82f6';
+                visualizerCtx.stroke();
+
+                // Draw center circle
+                visualizerCtx.beginPath();
+                visualizerCtx.arc(centerX, centerY, radius * 0.1, 0, Math.PI * 2);
+                visualizerCtx.fillStyle = 'rgba(59, 130, 246, 0.7)';
+                visualizerCtx.fill();
+            }
+
+            // Main visualization loop
+            function visualize() {
+                if (!isActive) return;
+
+                requestAnimationFrame(visualize);
+
+                analyser.getByteFrequencyData(frequencyData);
+                analyser.getByteTimeDomainData(timeDomainData);
+
+                // Calculate input level
+                let sum = 0;
+                for (let i = 0; i < timeDomainData.length; i++) {
+                    const value = (timeDomainData[i] - 128) / 128;
+                    sum += value * value;
+                }
+                const rms = Math.sqrt(sum / timeDomainData.length);
+                const level = Math.min(1, rms * 2);
+
+                levelMeterElement.style.width = `${level * 100}%`;
+                inputLevelElement.textContent = `${Math.round(level * 100)}%`;
+
+                // Update level meter color
+                levelMeterElement.className = level > 0.9 ?
+                    'h-2.5 bg-red-500 rounded-full' :
+                    level > 0.7 ?
+                        'h-2.5 bg-yellow-500 rounded-full' :
+                        'h-2.5 bg-green-500 rounded-full';
+
+                // Draw based on selected visual style
+                const style = visualStyleSelect.value;
+                if (style === 'wave') {
+                    drawWaveform();
+                } else if (style === 'circle') {
+                    drawCircle();
+                } else {
+                    drawBars();
+                }
+
+                updateFps();
+            }
+
+            // Toggle microphone
+            async function toggleMicrophone() {
+                try {
+                    if (!isActive) {
+                        // Start analysis
+                        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        analyser = audioContext.createAnalyser();
+                        analyser.fftSize = fftSize;
+
+                        frequencyData = new Uint8Array(analyser.frequencyBinCount);
+                        timeDomainData = new Uint8Array(analyser.frequencyBinCount);
+
+                        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                        microphone = audioContext.createMediaStreamSource(stream);
+                        microphone.connect(analyser);
+
+                        isActive = true;
+                        toggleMicBtn.innerHTML = '<i class="fas fa-stop mr-2"></i> Stop Analyzer';
+                        toggleMicBtn.className = 'w-full py-3 px-4 bg-red-600 hover:bg-red-700 rounded-lg font-medium mb-4 flex items-center justify-center';
+
+                        statusElement.innerHTML = '<span class="h-3 w-3 rounded-full bg-green-500 mr-2 pulse"></span><span class="text-sm">Active</span>';
+
+                        visualize();
+                    } else {
+                        // Stop analysis
+                        if (microphone) {
+                            microphone.disconnect();
+                        }
+                        if (audioContext) {
+                            audioContext.close();
+                        }
+
+                        isActive = false;
+                        toggleMicBtn.innerHTML = '<i class="fas fa-microphone mr-2"></i> Start Analyzer';
+                        toggleMicBtn.className = 'w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium mb-4 flex items-center justify-center';
+
+                        statusElement.innerHTML = '<span class="h-3 w-3 rounded-full bg-red-500 mr-2"></span><span class="text-sm">Inactive</span>';
+
+                        // Clear visualizer
+                        visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+                        bars.forEach(bar => bar.style.height = '0px');
+
+                        // Reset indicators
+                        inputLevelElement.textContent = '0%';
+                        levelMeterElement.style.width = '0%';
+                        dominantFreqElement.textContent = '0';
+                        fpsCounter.textContent = 'FPS: 0';
+                    }
+                } catch (error) {
+                    console.error('Error accessing microphone:', error);
+                    alert('Could not access microphone. Please ensure you have granted microphone permissions.');
+
+                    isActive = false;
+                    toggleMicBtn.innerHTML = '<i class="fas fa-microphone mr-2"></i> Start Analyzer';
+                    toggleMicBtn.className = 'w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium mb-4 flex items-center justify-center';
+
+                    statusElement.innerHTML = '<span class="h-3 w-3 rounded-full bg-red-500 mr-2"></span><span class="text-sm">Error</span>';
+                }
+            }
+
+            // Event listeners
+            toggleMicBtn.addEventListener('click', toggleMicrophone);
+
+            fftSizeSelect.addEventListener('change', () => {
+                fftSize = parseInt(fftSizeSelect.value);
+                if (analyser) {
+                    analyser.fftSize = fftSize;
+                    frequencyData = new Uint8Array(analyser.frequencyBinCount);
+                    timeDomainData = new Uint8Array(analyser.frequencyBinCount);
+                }
+            });
+
+            // Inform users about microphone access
+            toggleMicBtn.addEventListener('mouseover', () => {
+                if (!isActive) {
+                    toggleMicBtn.title = 'Click to start. You will be asked for microphone permission.';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

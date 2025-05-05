@@ -1,4 +1,4 @@
-﻿
+﻿@* 
 @using Data.Modelues
   @if(Prams !=null){
                 <div class="text-center mb-12">
@@ -13,7 +13,6 @@
 
 @foreach (var item in Prams.Items)
 {
-    <!-- تمرير العنصر الحالي من Prams إلى ButtonCard -->
     <ButtonFiltersCard Prams="item" />
 }
 
@@ -26,4 +25,4 @@
 
      public CardListUnifiedButtonModel? Prams{ set; get; }
 
-}
+} *@

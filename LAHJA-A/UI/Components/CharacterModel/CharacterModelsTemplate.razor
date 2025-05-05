@@ -1,0 +1,81 @@
+﻿@using Data.CharacterModels
+
+<CharacterModels1 Prams="Prams" />
+
+@code {
+
+
+    // private List<DataListProjectModul> Pramss = new List<DataListProjectModul>
+    // {
+    //      new DataListProjectModul
+    //     {
+    //         Name = "AI Chat",
+    //         Title ="Experience",
+    //         Description = " Interact with advanced AI characters and experience natural conversations",
+    //     },
+    // };
+    private List<DataListProjectModul> Character = new List<DataListProjectModul>
+    {
+
+        new DataListProjectModul
+        {
+            Name = "Dr. Sarah Chen",
+            Description = "Medical Researcher",
+            Image = "https://randomuser.me/api/portraits/women/44.jpg",
+            IsSelected = true
+        },
+        new DataListProjectModul
+        {
+            Name = "Professor James Wilson",
+            Description = "History Expert",
+            Image = "https://randomuser.me/api/portraits/men/32.jpg",
+            IsSelected = false
+        },
+        new DataListProjectModul
+        {
+            Name = "Emma, the Creative Writer",
+            Description = "Storytelling AI",
+            Image = "https://randomuser.me/api/portraits/women/68.jpg",
+            IsSelected = false
+        },
+        new DataListProjectModul
+        {
+            Name = "CodeMaster Alex",
+            Description = "Programming Assistant",
+            Image = "https://randomuser.me/api/portraits/men/75.jpg",
+            IsSelected = false
+        }
+    };
+    [Parameter]
+    public DataCardListProjectModul? DataBuild { get; set; }
+
+
+
+    private CardListUnifiedProjectModul Prams;
+
+    protected override void OnInitialized()
+    {
+        if (DataBuild == null)
+        {
+
+            DataBuild = new DataCardListProjectModul
+                {
+                    Name = "AI Chat",
+                    Title ="Experience",
+                    Description = "Interact with advanced AI characters and experience natural conversations ",
+                    
+                    Items = Character,
+
+
+
+
+                };
+        }
+
+        Prams = CardListUnifiedProjectModul.Create(DataBuild);
+
+        // Prams.ClassItem = "gdfgd";
+        base.OnInitialized();
+    }
+}
+

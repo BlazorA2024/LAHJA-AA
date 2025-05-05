@@ -1,6 +1,6 @@
 ﻿using LAHJA.Data.UI.Components.Base;
 
-namespace Data.Modelues;
+namespace Data.Mod;
 
 public class ServiceBase
 {

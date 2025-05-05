@@ -1,0 +1,79 @@
+﻿@using dApp.Spectral
+@* @using dApp.Services
+@if(Prams !=null){
+<div id="commandList" class="space-y-4">
+        @foreach (var command in Prams.DataBuild.Commands)
+    {
+        <div class="bg-gray-700 text-white px-4 py-2 rounded flex justify-between items-center">
+            <span>@command</span>
+            <button class="text-red-400 hover:text-red-600" @onclick="() => RemoveCommand(command)">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        </div>
+    }
+</div>
+
+}
+@code {
+    [Parameter] public ListDataFrequencyDetails? Prams { get; set; }
+
+   
+
+} *@
+@if(Prams !=null){
+    
+        <div class="text-sm text-gray-400">@Prams.DataBuild.Label</div>
+
+        @if (int.TryParse(Prams.DataBuild.Value.Replace(" Hz", ""), out var numericValue))
+        {
+            <div class="text-xl font-mono">@numericValue Hz</div>
+        }
+        else
+        {
+            <div class="text-xl font-mono">@Prams.DataBuild.Value</div>
+        }
+ 
+    @* <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    
+            <div class="bg-gray-700 p-3 rounded-lg">
+                <div class="text-sm text-gray-400">@Prams.DataBuild.Label</div>
+            <div class="text-xl font-mono">@Prams.DataBuild.Value</div>
+            </div>
+        
+    </div> *@
+
+   @*  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-gray-700 p-3 rounded-lg">
+            <div class="text-sm text-gray-400">Dominant Freq</div>
+            <div class="text-xl font-mono">@DominantFrequency Hz</div>
+        </div> 
+        <div class="bg-gray-700 p-3 rounded-lg">
+            <div class="text-sm text-gray-400">@Prams.DataBuild.Dominant </div>
+            <div class="text-xl font-mono">@Prams.DataBuild.BassLevel.ToString("0.00")</div>
+        </div>
+        <div class="bg-gray-700 p-3 rounded-lg">
+            <div class="text-sm text-gray-400">Mid (250-4kHz)</div>
+            <div class="text-xl font-mono">@MidLevel.ToString("0.00")</div>
+        </div>
+        <div class="bg-gray-700 p-3 rounded-lg">
+            <div class="text-sm text-gray-400">Treble (4k-20kHz)</div>
+            <div class="text-xl font-mono">@TrebleLevel.ToString("0.00")</div>
+        </div> 
+    </div> *@
+}
+
+@code {
+    [Parameter] public ListDataFrequency? Prams { get; set; }
+
+    // [Parameter]
+    // public int DominantFrequency { get; set; } = 0;
+
+    // [Parameter]
+    // public double BassLevel { get; set; } = 0.0;
+
+    // [Parameter]
+    // public double MidLevel { get; set; } = 0.0;
+
+    // [Parameter]
+    // public double TrebleLevel { get; set; } = 0.0;
+}

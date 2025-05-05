@@ -9,14 +9,25 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="~/" />
+ 
+    <link href="~/services.css" rel="stylesheet" /> 
+    <link href="~/Animation.css" rel="stylesheet" />
+    <link href="~/V5.css" rel="stylesheet" />
 
-    <link href="~/services.css" rel="stylesheet" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
     <title>AI Nexus - Discover Powerful AI Tools</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   @*  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI VTuber Creator Pro - Complete Studio</title> *@
+  @*   <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+ *@
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -60,8 +71,11 @@
             }
         }
     </script>
+     <style>
+      
+    </style>
 </head>
-<body class="min-h-screen">
+<body class="bg-gray-900 text-white min-h-screen">
 
     <component type="typeof(App)" render-mode="ServerPrerendered" />
 
@@ -75,9 +89,11 @@
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div> *@
+    <script src="~/DOMElements.js"></script>
+     <script src="~/SpectralAnalyzer.js"></script>
+    <script src="~/toggleMicV5.js"></script>
 
     
-
 
 </body>
 </html> @* 
@@ -97,7 +113,7 @@
 
 <body>
     <Routes />
-    <script src="_framework/blazor.web.js"></script>
+    <script src="_framework/DOMElements"></script>
 </body>
 
 </html> *@

@@ -1,0 +1,27 @@
+﻿@using dApp.Spectral
+@if(Prams != null){
+<div>
+    <div class="bg-gray-800 rounded-xl shadow-xl p-6 h-full">
+        <h2 class="text-xl font-semibold mb-4 text-purple-400">@Prams.DataBuild.Name</h2>
+
+        <button id="toggleMic" class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 rounded-lg flex items-center justify-center transition mb-4">
+            <i class="@Prams.DataBuild.Icon mr-2"></i>
+            <span>@Prams.DataBuild.Title</span>
+        </button>
+
+        <div class="space-y-4">
+           
+            <SelectFFTSize Prams="Prams.ISizes" />
+            <Smoothing Prams="Prams.ISharp" />
+            <Volumevoice Prams="Prams.IVolume" />
+        </div>
+    </div>
+</div>
+}
+@code {
+    [Parameter] public CardListDataCardControls? Prams { get; set; }
+
+}
+<script>
+ 
+</script>

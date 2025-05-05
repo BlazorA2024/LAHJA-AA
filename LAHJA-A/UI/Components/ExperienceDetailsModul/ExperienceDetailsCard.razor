@@ -1,0 +1,22 @@
+﻿
+
+@using Data.ExperienceDetails
+@using Microsoft.AspNetCore.Components
+
+@if (Prams != null )
+{
+    <div class="flex items-start">
+        <i class="@Prams.DataBuild.Icon mr-3 mt-1 text-blue-400"></i>
+        <p>@Prams.DataBuild.Description</p>
+    </div>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    [Parameter] public UnifiedExperienceDetailsModel? Prams { get; set; }
+    <!-- تأكد من أن Prams هي قائمة من العناصر -->
+}
+  

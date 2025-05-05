@@ -1,0 +1,34 @@
+﻿
+ @using Data.ExperienceDetails
+ 
+    
+
+
+    @if (Prams != null)
+    {
+    <div class="relative pl-10 mb-12 timeline-item">
+        <div class="absolute left-0 top-1 w-4 h-4 rounded-full bg-blue-500 border-4 border-slate-900"></div>
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 glow-effect">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                <h3 class="text-xl font-bold">@Prams.DataBuild.Company</h3>
+                <span class="text-sm bg-blue-900/30 text-blue-300 px-3 py-1 rounded-full">@Prams.DataBuild.Period</span>
+            </div>
+            <h4 class="text-lg text-blue-300 mb-4">@Prams.DataBuild.Position</h4>
+            <div class="space-y-4">
+                @foreach (var item in Prams.Items)
+                {
+                    <ExperienceDetailsCard Prams="item" />
+                }
+            </div>
+        </div>
+    </div>
+
+    }
+        
+    
+        
+  
+@code {
+
+    [Parameter] public ListUnifiedExperienceDetailsModel? Prams { get; set; }
+}

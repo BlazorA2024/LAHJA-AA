@@ -1,0 +1,102 @@
+﻿@using LAHJA_A.UI.Components.CommandRecognizer.YourCommands
+@using dApp.Debug
+
+@* @foreach (var p in Prams.Items)
+{
+    <CardAdd Prams="p" />
+} *@
+<CardAdd Prams="Prams" />
+@code {
+    private List<DataCardListModul> Debug = new List<DataCardListModul>
+    {
+           new DataCardListModul
+        {
+            ItemLM2= new()
+            {
+                   
+                    Title = "Add New Command",
+                    NamCommand = "Command word",
+                    Icon = "fas fa-plus",
+            },
+            modul3= new()
+            {
+                    Name = "Model Status",
+                    Title = "Training Progress:",
+            },
+               Items = new()
+               {
+
+                   new()
+                   {
+                    // Name = "Your Commands",
+                    // Title = "Add New Command",
+                    // NamCommand = "Command word",
+                    // Icon = "fas fa-plus",
+
+                   }
+
+               },
+
+
+           // Items = new List<DataCardListModulw>()
+        }
+    };
+
+    [Parameter]
+    public DataCardListModul? DataBuild { get; set; }
+
+    [Parameter]
+    public CardListUnifiedModul Prams { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        if (DataBuild == null)
+        {
+            DataBuild = Debug[0];
+        }
+
+        Prams = CardListUnifiedModul.Create(DataBuild);
+        base.OnInitialized();
+    }
+}
+
+@* 
+@code {
+
+
+    private List<DataListModul> Debug = new List<DataListModul>
+    {
+       
+    };
+    [Parameter]
+    public DataCardListModulw? DataBuild { get; set; }
+
+
+
+    private CardListUnifiedModulw Prams;
+
+    protected override void OnInitialized()
+    {
+        if (DataBuild == null)
+        {
+
+            DataBuild = new DataCardListModulw
+                {
+                    Name = "Featured Projects",
+                    Items = Debug,
+
+
+
+
+                };
+        }
+
+        Prams = CardListUnifiedModulw.Create(DataBuild);
+
+        // Prams.ClassItem = "gdfgd";
+        base.OnInitialized();
+    }
+}
+
+ *@

@@ -1,0 +1,92 @@
+﻿@using Data.ProjectModels
+
+<ProjectModels1 Prams="Prams" />
+
+@code {
+
+
+    private List<DataListProjectModul> Projects = new List<DataListProjectModul>
+    {
+        new DataListProjectModul
+        {
+            Title = "MobTalkerRedux",
+            Icon = "fas fa-book-open",
+            IconColor = "text-purple-400",
+            Link = "https://github.com/Iteranya/MobTalkerRedux",
+            Headline = "Embedded Visual Novel Engine",
+            Description = "Created an entire Visual Novel Game Engine from scratch that runs within Minecraft, featuring:",
+            Tags = new List<string> { "Python", "Java", "Minecraft" },
+            Features = new List<string>
+            {
+                "A pseudo-DSL (domain-specific language) for creating scripts",
+                "Python compiler that transforms readable scripts into JSON Finite State Machines",
+                "Deep understanding of working with obfuscated codebases (Minecraft)"
+            },
+            Skills = new List<string> { "Game Engine", "DSL Creation", "Reverse Engineering", "Finite State Machines" }
+        },
+        new DataListProjectModul
+        {
+            Title = "Aktiva AI",
+            Icon = "fas fa-robot",
+            IconColor = "text-blue-400",
+            Link = "https://github.com/Iteranya/AktivaAI",
+            Headline = "Multi-Agent Character AI Discord Bot",
+            Description = "Developed an AI wrapper in a Discord bot for multi-character AI implementation with local AI capabilities:",
+            Tags = new List<string> { "Python", "LLM", "Discord" },
+            Features = new List<string>
+            {
+                "Deep understanding of Large Language Model operations",
+                "Expertise in Python asynchronous task development",
+                "Running local AI on consumer hardware with 3rd party service integration",
+                "Advanced prompt engineering and AI context manipulation"
+            },
+            Skills = new List<string> { "Local AI Deployment", "Multi-Agent Systems", "Discord API", "AI Interaction Design" }
+        },
+        new DataListProjectModul
+        {
+            Title = "Viel-Mistral",
+            Icon = "fas fa-brain",
+            IconColor = "text-indigo-400",
+            Link = "https://huggingface.co/ArsParadox/Viel-Mistral-v3",
+            Headline = "Personality-Embedded LLM",
+            Description = "Created a customized large language model with built-in personality traits through dataset modification and fine-tuning:",
+            Tags = new List<string> { "Python", "LLM", "LoRA" },
+            Features = new List<string>
+            {
+                "Modified 52k Alpaca training dataset with unique personality characteristics",
+                "Developed automated scripts for large dataset manipulation using Kluster Batch format",
+                "Fine-tuned Mistral 7B using Low-Rank Adaptation (LoRA) on limited hardware"
+            },
+            Skills = new List<string> { "LLM Fine-tuning", "Dataset Engineering", "Personality AI", "LoRA" }
+        }
+    };
+    [Parameter]
+    public DataCardListProjectModul? DataBuild { get; set; }
+
+
+
+    private CardListUnifiedProjectModul Prams;
+
+    protected override void OnInitialized()
+    {
+        if (DataBuild == null)
+        {
+
+            DataBuild = new DataCardListProjectModul
+                {
+                    Name = "Featured Projects",
+                    Items = Projects,
+
+
+
+
+                };
+        }
+
+        Prams = CardListUnifiedProjectModul.Create(DataBuild);
+
+        // Prams.ClassItem = "gdfgd";
+        base.OnInitialized();
+    }
+}
+

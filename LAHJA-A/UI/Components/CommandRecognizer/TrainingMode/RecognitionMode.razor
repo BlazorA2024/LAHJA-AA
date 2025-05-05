@@ -1,0 +1,41 @@
+﻿@using Data.Non
+    @if (Prams !=null)
+    {
+         <div class="bg-gray-800 rounded-xl p-6">
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="@Prams.DataBuild.Icon mr-2"></i>@Prams.DataBuild.Name
+        </h2>
+
+        <div class="bg-gray-700 rounded-lg p-4 mb-4">
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="font-medium">@Prams.DataBuild.Title</h3>
+                <div class="text-sm font-medium">@($"{Prams.DataBuild.Confidence}% confidence")</div>
+            </div>
+            <div class="text-3xl font-bold text-center py-4">
+                @Prams.DataBuild.RecognizedCommand
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: @($"{Prams.DataBuild.Confidence}%")"></div>
+            </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+            @foreach (var itam in Prams.ItemButton)
+            {
+                <ButtonModelActions Prams="itam"  />
+            }
+            @*  <button @onclick="@RecordPrediction" class="gradient-bg hover:opacity-90 flex-1 py-3 rounded-lg font-medium transition flex items-center justify-center pulse-animation">
+                <i class="fas fa-microphone mr-2"></i> Record Command
+            </button>
+            <button @onclick="@Prams.DataBuild" class="bg-gray-700 hover:bg-gray-600 flex-1 py-3 rounded-lg font-medium transition flex items-center justify-center">
+                <i class="fas fa-circle-notch mr-2"></i> Continuous Mode
+            </button> *@
+        </div>  
+    </div>
+
+    }
+
+
+@code {
+    [Parameter] public ListNon Prams { get; set; } 
+}

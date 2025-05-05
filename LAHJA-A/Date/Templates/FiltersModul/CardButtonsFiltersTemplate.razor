@@ -1,4 +1,4 @@
-﻿
+﻿@* 
 @using Data.Modelues
 
 
@@ -59,7 +59,7 @@
 
     protected override void OnInitialized()
     {
-        if (DataBuild == null && DataBuild.Items.Count==0){
+        if (DataBuild == null ){
 
             DataBuild = new DataCardListButtonModel
         {
@@ -79,9 +79,10 @@
 
         Prams = CardListUnifiedButtonModel.Create(DataBuild);
 
-        Prams.ClassItem = "gdfgd";
+       // Prams.ClassItem = "gdfgd";
         base.OnInitialized();
     }
 
  
 }
+ *@

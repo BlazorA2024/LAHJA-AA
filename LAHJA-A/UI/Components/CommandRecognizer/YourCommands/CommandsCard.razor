@@ -1,0 +1,48 @@
+﻿@* @using dApp.Services
+@if(Prams !=null){
+<div id="commandList" class="space-y-4">
+        @foreach (var command in Prams.DataBuild.Commands)
+    {
+        <div class="bg-gray-700 text-white px-4 py-2 rounded flex justify-between items-center">
+            <span>@command</span>
+            <button class="text-red-400 hover:text-red-600" @onclick="() => RemoveCommand(command)">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        </div>
+    }
+</div>
+
+}
+@code {
+    [Parameter] public ListUnifiedModul? Prams { get; set; }
+
+   
+
+} *@
+@using dApp.Debug
+
+@if (Prams != null)
+{
+    <div id="commandList" class="space-y-4">
+        @foreach (var command in Prams.DataBuild.Commands)
+        {
+            <div class="bg-gray-700 text-white px-4 py-2 rounded flex justify-between items-center">
+                <span>@command</span>
+                <button class="text-red-400 hover:text-red-600" @onclick="() => RemoveCommand(command)">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public ListUnifiedModul? Prams { get; set; }
+
+    private void RemoveCommand(string command)
+    {
+        Prams?.DataBuild.Commands.Remove(command);
+        // إعادة التحديث أو الاستدعاء
+        StateHasChanged();
+    }
+}

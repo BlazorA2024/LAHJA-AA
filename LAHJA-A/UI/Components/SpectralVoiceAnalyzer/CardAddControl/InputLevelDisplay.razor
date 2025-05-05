@@ -1,0 +1,18 @@
+﻿@using Data.SpectralVoice
+
+
+<div class="bg-gray-700 p-4 rounded-lg mb-4">
+    <div class="flex justify-between mb-2">
+        <div id="@Prams.DataBuild.IdMeter" class="h-2.5 @Prams.DataBuild.MeterColor rounded-full" style="width: @Prams.DataBuild.WidthStyle"></div>
+        <span class="text-sm text-gray-300">@Prams.DataBuild.Name</span>
+        <span id="@Prams.DataBuild.IdText" class="text-sm font-mono">@Prams.DataBuild.LevelText</span>
+    </div>
+    <div class="h-2.5 w-full bg-gray-600 rounded-full">
+        <div id="@Prams.DataBuild.IdMeter" class="h-2.5 @Prams.DataBuild.MeterColor rounded-full" style="width: @Prams.DataBuild.WidthStyle"></div>
+    </div>
+</div>
+@code {
+    [Parameter] public ListDataInputLevel? Prams { get; set; }
+
+
+}

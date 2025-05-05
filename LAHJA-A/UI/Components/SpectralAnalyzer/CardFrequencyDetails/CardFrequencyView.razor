@@ -1,0 +1,91 @@
+﻿@using dApp.Spectral
+@* 
+@
+ @if(Prams !=null){ 
+    <div class="mt-8 bg-gray-800 rounded-xl shadow-xl p-6">
+        <h2 class="text-xl font-semibold mb-4 text-purple-400">Frequency Details</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-gray-700 p-3 rounded-lg">
+                <div class="text-sm text-gray-400">Dominant Freq</div>
+                <div id="dominantFreq" class="text-xl font-mono">0 Hz</div>
+            </div>
+            <div class="bg-gray-700 p-3 rounded-lg">
+                <div class="text-sm text-gray-400">Bass (20-250Hz)</div>
+                <div id="bassLevel" class="text-xl font-mono">0.00</div>
+            </div>
+            <div class="bg-gray-700 p-3 rounded-lg">
+                <div class="text-sm text-gray-400">Mid (250-4kHz)</div>
+                <div id="midLevel" class="text-xl font-mono">0.00</div>
+            </div>
+            <div class="bg-gray-700 p-3 rounded-lg">
+                <div class="text-sm text-gray-400">Treble (4k-20kHz)</div>
+                <div id="trebleLevel" class="text-xl font-mono">0.00</div>
+            </div>
+        </div>
+    </div>
+
+@code {
+    [Parameter] public ListUnifiedModul2? Prams { get; set; }
+
+ 
+}
+ *@
+
+ @if(Prams !=null){
+<div class="mt-8 bg-gray-800 rounded-xl shadow-xl p-6">
+    <h2 class="text-xl font-semibold mb-4 text-purple-400">@Prams.DataBuild.Name</h2>
+           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+      
+    @foreach(var item in Prams.Items){
+                <div class="bg-gray-700 p-3 rounded-lg">
+       <FrequencyDetails Prams="item" />
+                </div>
+    }
+  
+    </div>
+  
+</div>
+ }
+@code {
+    [Parameter] public CardListDataCardListModulFrequency? Prams { get; set; }
+
+
+   
+}
+@* <div class="mt-8 bg-gray-800 rounded-xl shadow-xl p-6">
+    <h2 class="text-xl font-semibold mb-4 text-purple-400">Frequency Details</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-gray-700 p-3 rounded-lg">
+            <div class="text-sm text-gray-400">Dominant Freq</div>
+            <div class="text-xl font-mono">@DominantFrequency Hz</div>
+        </div>
+        <div class="bg-gray-700 p-3 rounded-lg">
+            <div class="text-sm text-gray-400">Bass (20-250Hz)</div>
+            <div class="text-xl font-mono">@BassLevel.ToString("0.00")</div>
+        </div>
+        <div class="bg-gray-700 p-3 rounded-lg">
+            <div class="text-sm text-gray-400">Mid (250-4kHz)</div>
+            <div class="text-xl font-mono">@MidLevel.ToString("0.00")</div>
+        </div>
+        <div class="bg-gray-700 p-3 rounded-lg">
+            <div class="text-sm text-gray-400">Treble (4k-20kHz)</div>
+            <div class="text-xl font-mono">@TrebleLevel.ToString("0.00")</div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int DominantFrequency { get; set; } = 0;
+
+    [Parameter]
+    public double BassLevel { get; set; } = 0.0;
+
+    [Parameter]
+    public double MidLevel { get; set; } = 0.0;
+
+    [Parameter]
+    public double TrebleLevel { get; set; } = 0.0;
+}
+ *@

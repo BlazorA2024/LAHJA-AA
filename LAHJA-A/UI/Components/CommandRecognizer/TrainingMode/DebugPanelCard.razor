@@ -1,0 +1,129 @@
+﻿@using System.Timers
+@using Data.Non
+
+    @if (Prams != null)
+    {
+    <div class="lg:col-span-2 space-y-6">
+
+        <!-- Training Mode -->
+        <div class="bg-gray-800 rounded-xl p-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center">
+                <i class="fas fa-microphone-alt mr-2"></i> Training Mode
+            </h2>
+
+            @*  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="bg-gray-700 rounded-lg p-4">
+                <h3 class="font-medium mb-2">Training Command</h3>
+                <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
+                    @CurrentCommand
+                </div>
+            </div>
+            <div class="bg-gray-700 rounded-lg p-4">
+                <h3 class="font-medium mb-2">Training Samples</h3>
+                <div class="text-2xl font-bold">@SampleCount</div>
+                <div class="text-sm text-gray-300">Minimum 5 samples needed</div>
+            </div>
+        </div> *@
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+
+            @foreach (var itam in Prams.Items)
+            {
+                <ValueSubText Prams="itam" />
+            }
+            </div>
+        <div class="spectrogram relative">
+            <!-- يمكن استخدام مكتبة JS لرسم البيانات -->
+            <canvas id="waveformCanvas" class="absolute inset-0 w-full h-full"></canvas>
+            <canvas id="spectrogramCanvas" class="absolute inset-0 w-full h-full"></canvas>
+        </div>
+
+        <div class="network-visualization" id="networkVisualization">
+            <!-- Visualization Placeholder -->
+        </div>
+            <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-4">
+
+            @foreach (var itam in Prams.ItemButton)
+            {
+                <ButtonModelActions Prams="itam" />
+            }
+            </div>
+       @*  <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-4">
+            <button @onclick="RecordSample" class="gradient-bg hover:opacity-90 flex-1 py-3 rounded-lg font-medium transition flex items-center justify-center">
+                <i class="fas fa-microphone mr-2"></i> Record Sample
+            </button>
+            <button @onclick="TrainModel" class="bg-gray-700 hover:bg-gray-600 flex-1 py-3 rounded-lg font-medium transition flex items-center justify-center">
+                <i class="fas fa-brain mr-2"></i> Train Model
+            </button>
+            <button @onclick="TestModel" class="border border-purple-500 text-purple-400 hover:bg-purple-900 hover:bg-opacity-30 flex-1 py-3 rounded-lg font-medium transition flex items-center justify-center">
+                <i class="fas fa-vial mr-2"></i> Test Model
+            </button>
+        </div> *@
+    </div>
+
+    <!-- Recognition Mode -->
+        <RecognitionMode Prams="Prams.modul3" />
+   @*  <div class="bg-gray-800 rounded-xl p-6">
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fas fa-robot mr-2"></i> Recognition Mode
+        </h2>
+
+        <div class="bg-gray-700 rounded-lg p-4 mb-4">
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="font-medium">Predicted Command</h3>
+                <div class="text-sm font-medium">@($"{Confidence}% confidence")</div>
+            </div>
+            <div class="text-3xl font-bold text-center py-4">
+                @RecognizedCommand
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: @($"{Confidence}%")"></div>
+            </div>
+        </div>
+
+       @*  <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+            <button @onclick="RecordPrediction" class="gradient-bg hover:opacity-90 flex-1 py-3 rounded-lg font-medium transition flex items-center justify-center pulse-animation">
+                <i class="fas fa-microphone mr-2"></i> Record Command
+            </button>
+            <button @onclick="ToggleContinuousMode" class="bg-gray-700 hover:bg-gray-600 flex-1 py-3 rounded-lg font-medium transition flex items-center justify-center">
+                <i class="fas fa-circle-notch mr-2"></i> Continuous Mode
+            </button>
+        </div> 
+    </div> *@
+</div>
+}
+@code {
+   
+    [Parameter] public CardListNoneModul? Prams { get; set; }
+
+    
+
+
+    // private void RecordSample()
+    // {
+    //     // Logic to start recording
+    //     SampleCount++;
+    //     CurrentCommand = "Command " + SampleCount;
+    // }
+
+    // private void TrainModel()
+    // {
+    //     // Logic to train the model
+    // }
+
+    // private void TestModel()
+    // {
+    //     // Logic to test model
+    // }
+
+    // private void RecordPrediction()
+    // {
+    //     // Simulated prediction
+    //     RecognizedCommand = "Simulated Command";
+    //     Confidence = new Random().Next(60, 100);
+    // }
+
+    // private void ToggleContinuousMode()
+    // {
+    //     IsContinuousMode = !IsContinuousMode;
+    // }
+}

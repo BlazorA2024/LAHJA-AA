@@ -1,0 +1,101 @@
+﻿@* @using Data.Modelues
+
+@code {
+    [Parameter] public HeroSectionModel Prams { get; set; }
+}
+
+<section class="relative py-20 px-6">
+    <div class="absolute inset-0 -z-10">
+        <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-slate-900 to-purple-900/20"></div>
+    </div>
+    <div class="container mx-auto flex flex-col lg:flex-row items-center justify-between">
+        <div class="lg:w-1/2 mb-10 lg:mb-0">
+            <h1 class="text-5xl md:text-6xl font-bold mb-6">
+                <span class="gradient-text">@Prams.Name</span>
+            </h1>
+            <h2 class="text-2xl md:text-3xl font-semibold mb-6 text-slate-300">@Prams.Title</h2>
+            <p class="text-lg text-slate-300 mb-8 leading-relaxed">
+                @Prams.Description
+            </p>
+            <div class="flex space-x-6 mb-8">
+                <a href="mailto:@Prams.ContactEmail" class="social-icon text-blue-400 text-2xl">
+                    <i class="fas fa-envelope"></i>
+                </a>
+                <a href="@Prams.GithubUrl" target="_blank" class="social-icon text-slate-200 text-2xl">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="@Prams.LinkedinUrl" target="_blank" class="social-icon text-blue-500 text-2xl">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="@Prams.DiscordUrl" target="_blank" class="social-icon text-indigo-400 text-2xl">
+                    <i class="fab fa-discord"></i>
+                </a>
+            </div>
+            <a href="@Prams.ContactLink" class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-full font-medium hover:shadow-lg transition-all hover:translate-y-[-2px] inline-flex items-center">
+                Get in touch <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+        <div class="lg:w-1/2 flex justify-center">
+            <div class="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96">
+                <div class="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 opacity-20 blur-xl"></div>
+                <div class="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 opacity-10 blur-lg"></div>
+                <div class="relative w-full h-full bg-slate-800/50 border border-slate-700 rounded-xl overflow-hidden flex items-center justify-center">
+                    <div class="text-center p-6">
+                        <i class="fas fa-robot text-7xl md:text-8xl text-indigo-400 mb-4"></i>
+                        <h3 class="text-xl font-bold gradient-text">Ars Paradox</h3>
+                        <p class="text-slate-400">"Engineered Serendipity"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+ *@
+@using Data.HeroModul
+
+@code {
+    [Parameter] public CardListUnifiedToolsModul? Prams { get; set; }
+}
+
+<section class="relative py-20 px-6">
+    <div class="absolute inset-0 -z-10">
+        <div class="absolute inset-0 bg-[url('@Prams.DataBuild.Image')] opacity-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-slate-900 to-purple-900/20"></div>
+    </div>
+    <div class="container mx-auto flex flex-col lg:flex-row items-center justify-between">
+        <div class="lg:w-1/2 mb-10 lg:mb-0">
+            <h1 class="text-5xl md:text-6xl font-bold mb-6">
+                <span class="gradient-text">@Prams.DataBuild.Name</span>
+            </h1>
+            <h2 class="text-2xl md:text-3xl font-semibold mb-6 text-slate-300">@Prams.DataBuild.Title</h2>
+            <p class="text-lg text-slate-300 mb-8 leading-relaxed">
+                @Prams.DataBuild.Description
+            </p>
+            <div class="flex space-x-6 mb-8">
+
+            @foreach (var item in Prams.Items)
+            {
+                <IconsCard1 Prams="item" />
+            }
+            </div>
+
+            <a href="@Prams.DataBuild.Link" class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-full font-medium hover:shadow-lg transition-all hover:translate-y-[-2px] inline-flex items-center">
+                Get in touch <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+        <div class="lg:w-1/2 flex justify-center">
+            <div class="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96">
+                <div class="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 opacity-20 blur-xl"></div>
+                <div class="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 opacity-10 blur-lg"></div>
+                <div class="relative w-full h-full bg-slate-800/50 border border-slate-700 rounded-xl overflow-hidden flex items-center justify-center">
+                    <div class="text-center p-6">
+                        <i class="fas fa-robot text-7xl md:text-8xl text-indigo-400 mb-4"></i>
+                        <h3 class="text-xl font-bold gradient-text">Ars Paradox</h3>
+                        <p class="text-slate-400">"Engineered Serendipity"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

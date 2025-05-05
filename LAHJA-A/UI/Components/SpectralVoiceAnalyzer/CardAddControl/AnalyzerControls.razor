@@ -1,0 +1,51 @@
+﻿@using Data.SpectralVoice
+  
+    @if (Prams != null)
+{
+
+
+    @foreach (var item in Prams.Items)
+    {
+        <AnalyzerSettings Prams="item" />
+    }
+}
+@code {
+    [Parameter] public CardListDataCardControls? Prams { get; set; }
+
+}
+@* <div class="lg:w-1/3 bg-gray-800 rounded-lg p-6 shadow-lg">
+    
+
+    <div class="bg-gray-700 p-4 rounded-lg mb-4">
+        <div class="flex justify-between mb-2">
+            <span class="text-sm text-gray-300">Input Level</span>
+            <span id="inputLevel" class="text-sm font-mono">0%</span>
+        </div>
+        <div class="h-2.5 w-full bg-gray-600 rounded-full">
+            <div id="levelMeter" class="h-2.5 bg-green-500 rounded-full" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+        <div class="bg-gray-700 p-4 rounded-lg">
+            <span class="text-sm text-gray-300 block mb-1">Frequency Range</span>
+            <select id="frequencyRange" class="w-full bg-gray-800 text-white rounded px-3 py-2 text-sm outline-none">
+                <option value="full">Full Spectrum</option>
+                <option value="voice">Voice Range (80-300Hz)</option>
+                <option value="high">High Frequencies</option>
+                <option value="low">Low Frequencies</option>
+            </select>
+        </div>
+        <div class="bg-gray-700 p-4 rounded-lg">
+            <span class="text-sm text-gray-300 block mb-1">Visual Style</span>
+            <select id="visualStyle" class="w-full bg-gray-800 text-white rounded px-3 py-2 text-sm outline-none">
+                <option value="bars">Bars</option>
+                <option value="wave">Waveform</option>
+                <option value="circle">Circular</option>
+            </select>
+        </div>
+    </div>
+
+   
+</div>
+ *@

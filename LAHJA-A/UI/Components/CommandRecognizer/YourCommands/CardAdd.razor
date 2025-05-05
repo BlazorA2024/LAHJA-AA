@@ -1,0 +1,167 @@
+﻿@using dApp.Debug
+@* 
+
+<div class="lg:col-span-1 bg-gray-800 rounded-xl p-6">
+    <h2 class="text-xl font-semibold mb-4 flex items-center">
+        <i class="fas fa-list-ul mr-2"></i> Your Commands
+    </h2>
+
+    <div id="commandList" class="space-y-4">
+        @foreach (var command in DataPanel.Commands)
+        {
+            <div class="bg-gray-700 text-white px-4 py-2 rounded flex justify-between items-center">
+                <span>@command</span>
+                <button class="text-red-400 hover:text-red-600" @onclick="() => RemoveCommand(command)">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        }
+    </div>
+
+    <div class="mt-6">
+        <h3 class="font-medium mb-2">Add New Command</h3>
+        <div class="flex">
+            <input @bind="DataPanel.NewCommand" placeholder="Command word"
+                   class="flex-1 bg-gray-700 border border-gray-600 rounded-l-lg px-4 py-2 focus:outline-none focus:border-purple-500" />
+            <button class="gradient-bg hover:opacity-90 px-4 py-2 rounded-r-lg font-medium transition"
+                    @onclick="AddCommand">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="mt-6 bg-gray-700 rounded-lg p-4">
+        <h3 class="font-medium mb-2">Model Status</h3>
+        <div class="flex items-center mb-2">
+            <span class="text-sm">Training Progress:</span>
+            <span class="ml-auto text-sm">@($"{DataPanel.TrainingProgress}%")</span>
+        </div>
+        <div class="progress-bar bg-gray-600 rounded overflow-hidden h-4">
+            <div class="progress-fill bg-purple-500 h-full transition-all duration-300"
+                 style="width: @($"{DataPanel.TrainingProgress}%")"></div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private DataCommandPanel DataPanel = new DataCommandPanel();
+
+    private void AddCommand()
+    {
+        if (!string.IsNullOrWhiteSpace(DataPanel.NewCommand) && !DataPanel.Commands.Contains(DataPanel.NewCommand))
+        {
+            DataPanel.Commands.Add(DataPanel.NewCommand.Trim());
+            DataPanel.NewCommand = string.Empty;
+        }
+    }
+
+    private void RemoveCommand(string command)
+    {
+        DataPanel.Commands.Remove(command);
+    }
+
+
+    // Simulate training progress
+    protected override async Task OnInitializedAsync()
+    {
+        var timer = new System.Timers.Timer(500);
+        timer.Elapsed += (sender, args) =>
+        {
+            if (DataPanel.TrainingProgress < 100)
+            {
+                DataPanel.TrainingProgress += 5;
+                InvokeAsync(StateHasChanged);
+            }
+            else
+            {
+                timer.Stop();
+            }
+        };
+        timer.Start();
+    }
+    public class DataCommandPanel
+    {
+        public List<string> Commands { get; set; } = new List<string>();
+
+        public string NewCommand { get; set; } = string.Empty;
+
+        public int TrainingProgress { get; set; } = 0;
+    }
+}
+ *@
+
+@*  @inject CommandPanelService CommandService
+ *@@* 
+ @if(Prams !=null){
+<div class="lg:col-span-1 bg-gray-800 rounded-xl p-6">
+    <h2 class="text-xl font-semibold mb-4 flex items-center">
+        <i class="fas fa-list-ul mr-2"></i> @Prams.DataBuild.Name
+    </h2>
+
+
+    @foreach (var item in Prams.Items)
+        {
+          
+        <DebugCard Prams="item" />
+        }
+    <div class="mt-6">
+        <h3 class="font-medium mb-2">Add New Command</h3>
+        <div class="flex">
+            <input @bind="Prams.DataBuild.NewCommand" placeholder="Command word"
+                   class="flex-1 bg-gray-700 border border-gray-600 rounded-l-lg px-4 py-2 focus:outline-none focus:border-purple-500" />
+            <button class="gradient-bg hover:opacity-90 px-4 py-2 rounded-r-lg font-medium transition"
+                    @onclick="@Prams.DataBuild.OnAddCommand">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="mt-6 bg-gray-700 rounded-lg p-4">
+        <h3 class="font-medium mb-2">Model Status</h3>
+        <div class="flex items-center mb-2">
+            <span class="text-sm">Training Progress:</span>
+            <span class="ml-auto text-sm">@($"{Prams.DataBuild.TrainingProgress}%")</span>
+        </div>
+        <div class="progress-bar bg-gray-600 rounded overflow-hidden h-4">
+            <div class="progress-fill bg-purple-500 h-full transition-all duration-300"
+                 style="width: @($"{Prams.DataBuild.TrainingProgress}%")"></div>
+        </div>
+    </div>
+</div>
+ }
+@code {
+  [Parameter] public CardListUnifiedModul Prams { get; set; }
+
+  
+   
+}
+ *@
+@if (Prams != null)
+{
+    <div class="lg:col-span-1 bg-gray-800 rounded-xl p-6">
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fas fa-list-ul mr-2"></i> @Prams.DataBuild.Name
+        </h2>
+
+         @foreach (var item in Prams.Items)
+        {
+            <CommandsCard Prams="item" />
+        }
+
+        <NewCommandinput Prams="Prams.ItemLM2" />
+        <TrainingProgress Prams="Prams.modul3" />
+
+       
+       
+    </div>
+}
+
+@code {
+    [Parameter] public CardListUnifiedModul? Prams { get; set; }
+
+}
+@*
+@code {
+    [Parameter] public CardListUnifiedModul? Prams { get; set; }
+}
+ *@

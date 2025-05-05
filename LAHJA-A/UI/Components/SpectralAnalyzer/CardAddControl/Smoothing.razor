@@ -1,0 +1,55 @@
+﻿@using dApp.Spectral
+@* 
+@if (Prams != null)
+{
+    <div>
+        <label class="block text-sm font-medium text-gray-300 mb-1">Smoothing</label>
+        <input id="smoothing" type="range" min="0" max="1" step="0.01" value="0.6" class="w-full" />
+        <div class="text-xs text-gray-400 flex justify-between">
+            <span>Sharp</span>
+            <span>Smooth</span>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public ListUnifiedModul? Prams { get; set; }
+
+   
+}
+ *@
+ @if (Prams != null)
+{
+    <div>
+        <label class="block text-sm font-medium text-gray-300 mb-1">@Prams.DataBuild.Name</label>
+        <input id="smoothing"
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        class="w-full"
+               @bind="@Prams.DataBuild.Value" />
+        <div class="text-xs text-gray-400 flex justify-between">
+            <span>@Prams.DataBuild.Sharp</span>
+            <span>@Prams.DataBuild.Smooth</span>
+        </div>
+    </div>
+}
+@code {
+
+    [Parameter] public ListDataSmoothing? Prams { get; set; }
+    // [Parameter]
+    // public double Value { get; set; } = 0.6;
+
+    // [Parameter]
+    // public EventCallback<double> ValueChanged { get; set; }
+
+    // private async Task OnValueChanged(ChangeEventArgs e)
+    // {
+    //     if (double.TryParse(e.Value?.ToString(), out var newValue))
+    //     {
+    //         Value = newValue;
+    //         await ValueChanged.InvokeAsync(newValue);
+    //     }
+    // }
+}

@@ -1,0 +1,44 @@
+﻿@page "/v2"
+@* @using Data.Modelues*@
+@using LAHJA_A.Date.Templates.FiltersModul
+@using LAHJA_A.Date.Templates.ToolsModul
+@using LAHJA_A.Date.Templates.HeroModul
+@using LAHJA_A.Date.Templates.HeaderModul
+@using LAHJA_A.Date.Templates
+@using LAHJA_A.UI.Components.FiltersModuls
+@using LAHJA_A.UI.Components.HeaderModul
+@using LAHJA_A.UI.Components.ToolsModul
+@using LAHJA_A.UI.Components.HeroModul
+@using LAHJA_A.UI.Components.ExperienceDetailsModul
+@using LAHJA_A.UI.Components.CharacterModel
+@using LAHJA_A.UI.Components.CommandRecognizer
+
+
+<!-- Debug Panel -->
+
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <header class="flex justify-between items-center mb-8">
+        <div class="flex items-center space-x-2">
+            <div class="gradient-bg rounded-full w-10 h-10 flex items-center justify-center">
+                <i class="fas fa-robot text-xl"></i>
+            </div>
+            <h1 class="text-2xl font-bold">Neural Audio Command Recognizer</h1>
+        </div>
+        <div class="flex space-x-4">
+            <button id="clearStorageBtn" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg transition">
+                <i class="fas fa-trash-alt mr-2"></i>Clear Data
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <YourCommandsTemplate />
+
+        <!-- Center Panel - Training Interface -->
+        <TrainingModeTemplate />
+
+    </div>
+</div>

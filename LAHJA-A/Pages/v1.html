@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI VTuber Creator Pro - Complete Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Animation styles */
+        @keyframes pulse {
+            0% {
+                opacity: 0.7;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.7;
+            }
+        }
+
+        .pulse-connecting {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes liveFeedback {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .live-feedback {
+            animation: liveFeedback 2s infinite;
+        }
+
+        .debug-console {
+            font-family: monospace;
+            font-size: 13px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-left: 3px solid #4ade80;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 4px;
+        }
+
+        /* Tabs */
+        .tab-content {
+            display: none;
+        }
+
+            .tab-content.active {
+                display: block;
+                animation: fadeIn 0.3s ease-in-out;
+            }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Text-to-speech visualization */
+        .tts-visualizer {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 100px;
+            gap: 2px;
+        }
+
+        .tts-bar {
+            width: 6px;
+            background: #8b5cf6;
+            border-radius: 3px;
+            transition: height 0.1s ease;
+        }
+
+        /* Status ring */
+        .status-ring {
+            box-shadow: 0 0 10px currentColor;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200 min-h-screen">
+    <!-- Debug Panel -->
+    <div id="debugPanel" class="fixed bottom-0 right-0 w-96 bg-gray-800 rounded-tl-lg shadow-xl z-50 hidden">
+        <div class="bg-gray-700 px-4 py-2 rounded-tl-lg flex justify-between items-center">
+            <h3 class="font-bold"><i class="fas fa-bug mr-2"></i>System Debugger</h3>
+            <button id="closeDebug" class="text-gray-400 hover:text-white">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="debugConsole" class="debug-console p-3 h-64 overflow-y-auto">
+            <div class="text-green-400">System debug console initialized...</div>
+        </div>
+        <div class="bg-gray-700 px-4 py-2 flex space-x-2">
+            <button id="fullDiagnostic" class="bg-orange-600 hover:bg-orange-700 px-3 py-1 rounded text-sm">
+                <i class="fas fa-stethoscope mr-1"></i>Full Diagnostic
+            </button>
+            <button id="exportLogs" class="bg-gray-600 hover:bg-gray-700 px-3 py-1 rounded text-sm">
+                <i class="fas fa-file-export mr-1"></i>Export Logs
+            </button>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-6">
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-4xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
+                    <i class="fas fa-robot mr-2"></i>AI VTuber Creator Pro
+                </h1>
+                <p class="text-gray-400">Complete streaming AI personality solution</p>
+            </div>
+            <div class="flex space-x-4">
+                <button id="saveConfig" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg">
+                    <i class="fas fa-save mr-2"></i>Save Config
+                </button>
+                <button id="debugToggle" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg">
+                    <i class="fas fa-bug mr-2"></i>Debug
+                </button>
+            </div>
+        </header>
+
+        <!-- Status Bar -->
+        <div id="statusBar" class="bg-gray-800 rounded-lg p-3 mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="flex items-center space-x-2">
+                <div class="w-3 h-3 rounded-full bg-gray-600 status-ring" id="connectionStatusDot"></div>
+                <span class="text-gray-400">VTube Studio:</span>
+                <span id="vtsStatus" class="px-2 py-1 rounded bg-gray-700 text-sm">Not Connected</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <div class="w-3 h-3 rounded-full bg-gray-600" id="twitchStatusDot"></div>
+                <span class="text-gray-400">Twitch:</span>
+                <span id="twitchStatus" class="px-2 py-1 rounded bg-gray-700 text-sm">Disconnected</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <div class="w-3 h-3 rounded-full bg-gray-600" id="discordStatusDot"></div>
+                <span class="text-gray-400">Discord:</span>
+                <span id="discordStatus" class="px-2 py-1 rounded bg-gray-700 text-sm">Disconnected</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <div class="w-3 h-3 rounded-full bg-gray-600" id="aiStatusDot"></div>
+                <span class="text-gray-400">AI Personality:</span>
+                <span id="aiStatus" class="px-2 py-1 rounded bg-gray-700 text-sm">Inactive</span>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Panel - Connections -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- VTube Studio Connection Panel -->
+                <div class="bg-gray-800 rounded-xl p-6 shadow-lg">
+                    <h2 class="text-xl font-semibold mb-4 border-b border-gray-700 pb-2 flex items-center">
+                        <i class="fas fa-project-diagram mr-2 text-purple-400"></i>VTube Studio
+                        <span class="ml-auto w-3 h-3 rounded-full bg-gray-600 status-ring" id="vtsConnectionDot"></span>
+                    </h2>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">API Settings</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <input type="number" id="vtsPort" value="8001" class="w-full bg-gray-700 rounded-lg px-3 py-2" placeholder="Port">
+                                </div>
+                                <button id="connectVTS" class="bg-purple-600 hover:bg-purple-700 px-3 py-2 rounded-lg">
+                                    <i class="fas fa-plug mr-2"></i>Connect
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Model Status</label>
+                            <div id="modelIndicator" class="p-2 bg-gray-700 rounded-lg flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <span class="w-3 h-3 rounded-full bg-gray-600 mr-2" id="modelStatusDot"></span>
+                                    <span id="modelName" class="text-gray-400">No model loaded</span>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button id="reloadModel" class="text-gray-400 hover:text-purple-400" title="Reload Model">
+                                        <i class="fas fa-redo"></i>
+                                    </button>
+                                    <button id="modelSettings" class="text-gray-400 hover:text-purple-400" title="Model Settings">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 pt-2">
+                            <button id="testVTS" class="bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-lg">
+                                <i class="fas fa-vial mr-2"></i>Test
+                            </button>
+                            <button id="vtsHotkeys" class="bg-purple-600 hover:bg-purple-700 px-3 py-2 rounded-lg">
+                                <i class="fas fa-keyboard mr-2"></i>Hotkeys
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Twitch Integration Panel -->
+                <div class="bg-gray-800 rounded-xl p-6 shadow-lg">
+                    <h2 class="text-xl font-semibold mb-4 border-b border-gray-700 pb-2 flex items-center">
+                        <i class="fab fa-twitch mr-2 text-purple-400"></i>Twitch
+                        <span class="ml-auto w-3 h-3 rounded-full bg-gray-600 status-ring" id="twitchDot"></span>
+                    </h2>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Channel</label>
+                            <div class="flex">
+                                <span class="inline-flex items-center px-3 rounded-l-lg bg-gray-700 text-gray-400">twitch.tv/</span>
+                                <input type="text" id="twitchChannel" class="flex-1 bg-gray-700 rounded-r-lg px-3 py-2" placeholder="yourchannel">
+                            </div>
+                        </div>
+
+                        <div id="twitchAuthSection">
+                            <label class="block text-sm font-medium mb-1">OAuth Token</label>
+                            <div class="flex">
+                                <input type="password" id="twitchOAuth" class="flex-1 bg-gray-700 rounded-l-lg px-3 py-2" placeholder="oauth:xxxxxxxx">
+                                <button id="showOAuth" class="bg-gray-600 hover:bg-gray-700 rounded-r-lg px-3">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-1">
+                                Get token from <a href="https://twitchtokengenerator.com" target="_blank" class="text-purple-400 hover:underline">Twitch Token Generator</a>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 pt-2">
+                            <button id="connectTwitch" class="bg-purple-600 hover:bg-purple-700 px-3 py-2 rounded-lg">
+                                <i class="fas fa-plug mr-2"></i>Connect
+                            </button>
+                            <button id="twitchTest" class="bg-gray-600 hover:bg-gray-700 px-3 py-2 rounded-lg">
+                                <i class="fas fa-comment-alt mr-2"></i>Test Chat
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Discord Integration Panel -->
+                <div class="bg-gray-800 rounded-xl p-6 shadow-lg">
+                    <h2 class="text-xl font-semibold mb-4 border-b border-gray-700 pb-2 flex items-center">
+                        <i class="fab fa-discord mr-2 text-purple-400"></i>Discord
+                        <span class="ml-auto w-3 h-3 rounded-full bg-gray-600 status-ring" id="discordDot"></span>
+                    </h2>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Bot Token</label>
+                            <div class="flex">
+                                <input type="password" id="discordToken" class="flex-1 bg-gray-700 rounded-l-lg px-3 py-2" placeholder="xxxxxxxx.xxxx.xxxx">
+                                <button id="showDiscordToken" class="bg-gray-600 hover:bg-gray-700 rounded-r-lg px-3">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-1">
+                                Create a bot at <a href="https://discord.com/developers" target="_blank" class="text-purple-400 hover:underline">Discord Developer Portal</a>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Channel ID</label>
+                            <input type="text" id="discordChannel" class="w-full bg-gray-700 rounded-lg px-3 py-2" placeholder="1234567890">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 pt-2">
+                            <button id="connectDiscord" class="bg-purple-600 hover:bg-purple-700 px-3 py-2 rounded-lg">
+                                <i class="fas fa-plug mr-2"></i>Connect
+                            </button>
+                            <button id="discordTest" class="bg-gray-600 hover:bg-gray-700 px-3 py-2 rounded-lg">
+                                <i class="fas fa-comment-alt mr-2"></i>Test Message
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center Panel - AI Configuration -->
+            <div class="lg:col-span-1">
+                <div class="bg-gray-800 rounded-xl p-6 shadow-lg h-full">
+                    <!-- Tab Navigation -->
+                    <div class="flex border-b border-gray-700 mb-4">
+                        <button class="tab-btn px-4 py-2 font-medium text-purple-400 border-b-2 border-purple-500" data-tab="aiConfig">AI Config</button>
+                        <button class="tab-btn px-4 py-2 font-medium text-gray-400 hover:text-white" data-tab="personality">Personality</button>
+                        <button class="tab-btn px-4 py-2 font-medium text-gray-400 hover:text-white" data-tab="voice">Voice</button>
+                    </div>
+
+                    <!-- Tab Contents -->
+                    <div class="tab-content active" id="aiConfig">
+                        <h2 class="text-xl font-semibold mb-4 flex items-center">
+                            <i class="fas fa-brain mr-2 text-pink-400"></i>AI Settings
+                            <span class="ml-auto w-3 h-3 rounded-full bg-gray-600 status-ring" id="aiConfigDot"></span>
+                        </h2>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">AI Model</label>
+                                <select id="aiModel" class="w-full bg-gray-700 rounded-lg px-3 py-2">
+                                    <option value="gpt4">GPT-4 Turbo (Recommended)</option>
+                                    <option value="claude">Claude 3 Opus</option>
+                                    <option value="llama3">Llama 3 70B</option>
+                                    <option value="mistral">Mistral 7B</option>
+                                    <option value="local">Local Model (Custom)</option>
+                                </select>
+
+                                <div id="localModelConfig" class="mt-2 p-3 bg-gray-700 rounded-lg hidden">
+                                    <div class="space-y-3">
+                                        <div>
+                                            <label class="block text-xs font-medium mb-1">Model Path</label>
+                                            <div class="flex">
+                                                <input type="text" id="modelPath" class="flex-1 bg-gray-600 rounded-l-lg px-3 py-2 text-sm" placeholder="/path/to/model.gguf">
+                                                <button class="bg-gray-700 hover:bg-gray-600 rounded-r-lg px-3 text-sm">
+                                                    <i class="fas fa-folder-open"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <div>
+                                                <label class="block text-xs font-medium mb-1">Context Size</label>
+                                                <input type="number" id="contextSize" class="w-full bg-gray-600 rounded-lg px-3 py-2 text-sm" value="4096">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-medium mb-1">GPU Layers</label>
+                                                <input type="number" id="gpuLayers" class="w-full bg-gray-600 rounded-lg px-3 py-2 text-sm" value="20">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Prompt Template</label>
+                                <select id="promptTemplate" class="w-full bg-gray-700 rounded-lg px-3 py-2">
+                                    <option value="vtuber">VTuber (Default)</option>
+                                    <option value="assistant">Helpful Assistant</option>
+                                    <option value="tsundere">Tsundere Personality</option>
+                                    <option value="yandere">Yandere Personality</option>
+                                    <option value="custom">Custom Template</option>
+                                </select>
+
+                                <div id="customTemplate" class="mt-2 hidden">
+                                    <textarea id="customPrompt" class="w-full bg-gray-700 rounded-lg px-3 py-2 h-32 text-sm" placeholder="Enter your custom prompt template..."></textarea>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Response Settings</label>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm">Creativity</span>
+                                        <input type="range" id="creativity" min="0" max="2" step="0.1" value="1" class="w-32">
+                                        <span class="text-sm text-purple-400">Balanced</span>
+                                    </div>
+
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm">Response Length</span>
+                                        <input type="range" id="responseLength" min="1" max="5" value="3" class="w-32">
+                                        <span class="text-sm text-purple-400">Medium</span>
+                                    </div>
+
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="allowMemory" class="rounded bg-gray-700" checked>
+                                        <label class="text-sm">Enable Conversation Memory</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pt-4">
+                                <button id="testAI" class="w-full bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg">
+                                    <i class="fas fa-vial mr-2"></i>Test AI Response
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="personality">
+                        <h2 class="text-xl font-semibold mb-4"><i class="fas fa-user-tie mr-2 text-pink-400"></i>Personality</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Character Name</label>
+                                <input type="text" id="charName" class="w-full bg-gray-700 rounded-lg px-3 py-2" placeholder="Your VTuber's name">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Personality Traits</label>
+                                <div id="traitsContainer" class="space-y-2">
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="traitFriendly" class="rounded bg-gray-700" checked>
+                                        <label class="text-sm">Friendly/Warm</label>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="traitShy" class="rounded bg-gray-700">
+                                        <label class="text-sm">Shy/Reserved</label>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="traitEnergetic" class="rounded bg-gray-700">
+                                        <label class="text-sm">Energetic/Excitable</label>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="traitSerious" class="rounded bg-gray-700">
+                                        <label class="text-sm">Serious/Professional</label>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="traitGloomy" class="rounded bg-gray-700">
+                                        <label class="text-sm">Gloomy/Pessimistic</label>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="traitOptimistic" class="rounded bg-gray-700" checked>
+                                        <label class="text-sm">Optimistic/Cheerful</label>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="traitBlunt" class="rounded bg-gray-700">
+                                        <label class="text-sm">Blunt/Direct</label>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="traitPlayful" class="rounded bg-gray-700" checked>
+                                        <label class="text-sm">Playful/Teasing</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Special Characteristics</label>
+                                <textarea id="specialTraits" class="w-full bg-gray-700 rounded-lg px-3 py-2 h-24" placeholder="Unique quirks, speech patterns, catchphrases etc."></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Dialog Examples</label>
+                                <textarea id="dialogExamples" class="w-full bg-gray-700 rounded-lg px-3 py-2 h-32" placeholder="Example responses you'd like the AI to emulate"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="voice">
+                        <h2 class="text-xl font-semibold mb-4 flex items-center">
+                            <i class="fas fa-volume-up mr-2 text-pink-400"></i>Voice Settings
+                            <span class="ml-auto w-3 h-3 rounded-full bg-gray-600 status-ring" id="voiceDot"></span>
+                        </h2>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">TTS Engine</label>
+                                <select id="ttsEngine" class="w-full bg-gray-700 rounded-lg px-3 py-2">
+                                    <option value="elevenlabs">ElevenLabs (Recommended)</option>
+                                    <option value="azure">Azure TTS</option>
+                                    <option value="google">Google TTS</option>
+                                    <option value="coqui">Coqui TTS</option>
+                                    <option value="local">Local TTS</option>
+                                </select>
+
+                                <div id="elevenLabsConfig" class="mt-2 p-3 bg-gray-700 rounded-lg">
+                                    <div class="space-y-3">
+                                        <div>
+                                            <label class="block text-xs font-medium mb-1">API Key</label>
+                                            <div class="flex">
+                                                <input type="password" id="elevenLabsKey" class="flex-1 bg-gray-600 rounded-l-lg px-3 py-2 text-sm" placeholder="xxxxxxxx">
+                                                <button id="showElevenLabsKey" class="bg-gray-700 hover:bg-gray-600 rounded-r-lg px-3 text-sm">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-medium mb-1">Voice Preset</label>
+                                            <select id="elevenLabsVoice" class="w-full bg-gray-600 rounded-lg px-3 py-2 text-sm">
+                                                <option value="rachel">Rachel (Female, Clear)</option>
+                                                <option value="dave">Dave (Male, Warm)</option>
+                                                <option value="clyde">Clyde (Male, Deep)</option>
+                                                <option value="sarah">Sarah (Female, Energetic)</option>
+                                                <option value="custom">Custom Voice ID</option>
+                                            </select>
+                                        </div>
+                                        <div id="elevenLabsCustomDiv" class="hidden">
+                                            <label class="block text-xs font-medium mb-1">Custom Voice ID</label>
+                                            <input type="text" id="elevenLabsCustom" class="w-full bg-gray-600 rounded-lg px-3 py-2 text-sm" placeholder="XXXXXXXXXX">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="localTTSConfig" class="mt-2 p-3 bg-gray-700 rounded-lg hidden">
+                                    <div class="space-y-3">
+                                        <div>
+                                            <label class="block text-xs font-medium mb-1">Model Path</label>
+                                            <div class="flex">
+                                                <input type="text" id="localTTSModel" class="flex-1 bg-gray-600 rounded-l-lg px-3 py-2 text-sm" placeholder="/path/to/model">
+                                                <button class="bg-gray-700 hover:bg-gray-600 rounded-r-lg px-3 text-sm">
+                                                    <i class="fas fa-folder-open"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <div>
+                                                <label class="block text-xs font-medium mb-1">Speech Rate</label>
+                                                <input type="number" id="ttsSpeed" min="0.5" max="2" step="0.1" value="1" class="w-full bg-gray-600 rounded-lg px-3 py-2 text-sm">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-medium mb-1">Pitch</label>
+                                                <input type="number" id="ttsPitch" min="0.5" max="1.5" step="0.1" value="1" class="w-full bg-gray-600 rounded-lg px-3 py-2 text-sm">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Voice Settings</label>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm">Speech Rate</span>
+                                        <input type="range" id="speechRate" min="0.5" max="1.5" step="0.1" value="1" class="w-32">
+                                        <span class="text-sm text-purple-400">Normal</span>
+                                    </div>
+
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm">Voice Pitch</span>
+                                        <input type="range" id="voicePitch" min="0.8" max="1.2" step="0.05" value="1" class="w-32">
+                                        <span class="text-sm text-purple-400">Normal</span>
+                                    </div>
+
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="voiceEffects" class="rounded bg-gray-700" checked>
+                                        <label class="text-sm">Enable Voice Effects</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Test Voice</label>
+                                <div class="flex space-x-2">
+                                    <input type="text" id="ttsTestText" class="flex-1 bg-gray-700 rounded-lg px-3 py-2" placeholder="Enter text to test voice" value="Hello everyone! How are you doing today?">
+                                    <button id="testTTS" class="bg-purple-600 hover:bg-purple-700 px-3 py-2 rounded-lg">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="ttsVisualization" class="h-20 bg-gray-700 rounded-lg flex items-center justify-center hidden">
+                                <div class="tts-visualizer" id="ttsVisualizer">
+                                    <div class="tts-bar"></div>
+                                    <div class="tts-bar"></div>
+                                    <div class="tts-bar"></div>
+                                    <div class="tts-bar"></div>
+                                    <div class="tts-bar"></div>
+                                    <div class="tts-bar"></div>
+                                    <div class="tts-bar"></div>
+                                    <div class="tts-bar"></div>
+                                    <div class="tts-bar"></div>
+                                    <div class="tts-bar"></div>
+                                    <div class="tts-bar"></div>
+                                    <div class="tts-bar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Preview & Interactions -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Model Preview -->
+                <div class="bg-gray-800 rounded-xl p-6 shadow-lg">
+                    <h2 class="text-xl font-semibold mb-4 border-b border-gray-700 pb-2 flex justify-between items-center">
+                        <span><i class="fas fa-user mr-2"></i>Live Preview</span>
+                        <span id="previewStatus" class="text-sm px-2 py-1 rounded bg-gray-700">Not Connected</span>
+                    </h2>
+
+                    <div class="relative">
+                        <div class="bg-black rounded-lg w-full aspect-[4/5] flex items-center justify-center mb-4">
+                            <div id="modelPreview" class="relative w-full h-full flex items-center justify-center">
+                                <div id="previewPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+                                    <i class="fas fa-user-ninja text-5xl mb-4 text-gray-500"></i>
+                                    <p class="text-gray-500">VTuber preview will appear here when connected</p>
+                                    <p class="text-sm text-gray-600 mt-2">Ensure VTube Studio is running with your model</p>
+                                </div>
+                                <img src="" id="vtuberPreview" class="absolute inset-0 w-full h-full object-contain hidden">
+                            </div>
+                        </div>
+
+                        <!-- Preview Controls -->
+                        <div class="grid grid-cols-3 gap-2">
+                            <button id="resetPose" class="bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded-lg" disabled>
+                                <i class="fas fa-undo mr-2"></i>Reset
+                            </button>
+                            <button id="toggleTracking" class="bg-purple-600 hover:bg-purple-700 px-3 py-2 rounded-lg" disabled>
+                                <i class="fas fa-eye mr-2"></i>Tracking
+                            </button>
+                            <button id="triggerHotkey" class="bg-pink-600 hover:bg-pink-700 px-3 py-2 rounded-lg" disabled>
+                                <i class="fas fa-magic mr-2"></i>Hotkey
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactions Panel -->
+                <div class="bg-gray-800 rounded-xl p-6 shadow-lg">
+                    <h2 class="text-xl font-semibold mb-4 border-b border-gray-700 pb-2">
+                        <i class="fas fa-comments mr-2"></i>Interactions
+                    </h2>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Chat Message</label>
+                            <div class="flex space-x-2">
+                                <input type="text" id="chatMessage" class="flex-1 bg-gray-700 rounded-lg px-3 py-2" placeholder="Send a test message...">
+                                <button id="sendChat" class="bg-purple-600 hover:bg-purple-700 px-3 py-2 rounded-lg">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-1">AI Response</label>
+                            <div id="aiResponse" class="bg-gray-700 rounded-lg p-3 h-32 overflow-y-auto text-sm">
+                                <p class="text-gray-400">AI responses will appear here...</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2">
+                            <button id="triggerHappy" class="bg-yellow-500 hover:bg-yellow-600 px-3 py-2 rounded-lg">
+                                <i class="fas fa-smile mr-2"></i>Happy
+                            </button>
+                            <button id="triggerAngry" class="bg-red-500 hover:bg-red-600 px-3 py-2 rounded-lg">
+                                <i class="fas fa-angry mr-2"></i>Angry
+                            </button>
+                            <button id="triggerSurprise" class="bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded-lg">
+                                <i class="fas fa-surprise mr-2"></i>Surprise
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        // Status elements
+        const vtsStatus = document.getElementById('vtsStatus');
+        const twitchStatus = document.getElementById('twitchStatus');
+        const discordStatus = document.getElementById('discordStatus');
+        const aiStatus = document.getElementById('aiStatus');
+
+        // Status dots
+        const connectionStatusDot = document.getElementById('connectionStatusDot');
+        const twitchStatusDot = document.getElementById('twitchStatusDot');
+        const discordStatusDot = document.getElementById('discordStatusDot');
+        const aiStatusDot = document.getElementById('aiStatusDot');
+
+        // VTube Studio elements
+        const connectVTS = document.getElementById('connectVTS');
+        const vtsPort = document.getElementById('vtsPort');
+        const testVTS = document.getElementById('testVTS');
+        const vtsHotkeys = document.getElementById('vtsHotkeys');
+        const reloadModel = document.getElementById('reloadModel');
+        const modelSettings = document.getElementById('modelSettings');
+
+        // Model preview elements
+        const vtuberPreview = document.getElementById('vtuberPreview');
+        const previewPlaceholder = document.getElementById('previewPlaceholder');
+        const previewStatus = document.getElementById('previewStatus');
+        const resetPose = document.getElementById('resetPose');
+        const toggleTracking = document.getElementById('toggleTracking');
+        const triggerHotkey = document.getElementById('triggerHotkey');
+
+        // Twitch elements
+        const twitchChannel = document.getElementById('twitchChannel');
+        const twitchOAuth = document.getElementById('twitchOAuth');
+        const connectTwitch = document.getElementById('connectTwitch');
+        const twitchTest = document.getElementById('twitchTest');
+        const showOAuth = document.getElementById('showOAuth');
+
+        // Discord elements
+        const discordToken = document.getElementById('discordToken');
+        const discordChannel = document.getElementById('discordChannel');
+        const connectDiscord = document.getElementById('connectDiscord');
+        const discordTest = document.getElementById('discordTest');
+        const showDiscordToken = document.getElementById('showDiscordToken');
+
+        // AI Configuration elements
+        const aiModel = document.getElementById('aiModel');
+        const promptTemplate = document.getElementById('promptTemplate');
+        const customTemplate = document.getElementById('customTemplate');
+        const customPrompt = document.getElementById('customPrompt');
+        const creativity = document.getElementById('creativity');
+        const responseLength = document.getElementById('responseLength');
+        const allowMemory = document.getElementById('allowMemory');
+        const testAI = document.getElementById('testAI');
+        const localModelConfig = document.getElementById('localModelConfig');
+
+        // Personality elements
+        const charName = document.getElementById('charName');
+        const specialTraits = document.getElementById('specialTraits');
+        const dialogExamples = document.getElementById('dialogExamples');
+
+        // Voice elements
+        const ttsEngine = document.getElementById('ttsEngine');
+        const elevenLabsConfig = document.getElementById('elevenLabsConfig');
+        const localTTSConfig = document.getElementById('localTTSConfig');
+        const speechRate = document.getElementById('speechRate');
+        const voicePitch = document.getElementById('voicePitch');
+        const voiceEffects = document.getElementById('voiceEffects');
+        const ttsTestText = document.getElementById('ttsTestText');
+        const testTTS = document.getElementById('testTTS');
+        const ttsVisualization = document.getElementById('ttsVisualization');
+        const ttsVisualizer = document.getElementById('ttsVisualizer');
+
+        // Debug panel elements
+        const debugPanel = document.getElementById('debugPanel');
+        const debugConsole = document.getElementById('debugConsole');
+        const debugToggle = document.getElementById('debugToggle');
+        const closeDebug = document.getElementById('closeDebug');
+        const fullDiagnostic = document.getElementById('fullDiagnostic');
+        const exportLogs = document.getElementById('exportLogs');
+
+        // Interaction elements
+        const chatMessage = document.getElementById('chatMessage');
+        const sendChat = document.getElementById('sendChat');
+        const aiResponse = document.getElementById('aiResponse');
+        const triggerHappy = document.getElementById('triggerHappy');
+        const triggerAngry = document.getElementById('triggerAngry');
+        const triggerSurprise = document.getElementById('triggerSurprise');
+
+        // App state
+        let isVTSConnected = false;
+        let isTwitchConnected = false;
+        let isDiscordConnected = false;
+        let isAIActive = false;
+        let isTTSTesting = false;
+        let debugLogs = [];
+
+        // Initialize app
+        function init() {
+            setupEventListeners();
+            setupTabNavigation();
+            loadDefaultConfig();
+
+            // Check for debug mode in URL
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('debug')) {
+                toggleDebugPanel();
+            }
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // VTube Studio connection
+            connectVTS.addEventListener('click', toggleVTSConnection);
+            testVTS.addEventListener('click', testVTSConnection);
+
+            // Model controls
+            resetPose.addEventListener('click', resetModelPose);
+            toggleTracking.addEventListener('click', toggleFaceTracking);
+            reloadModel.addEventListener('click', reloadCurrentModel);
+            modelSettings.addEventListener('click', openModelSettings);
+            vtsHotkeys.addEventListener('click', configureHotkeys);
+
+            // Twitch connection
+            connectTwitch.addEventListener('click', toggleTwitchConnection);
+            twitchTest.addEventListener('click', testTwitchChat);
+            showOAuth.addEventListener('click', () => {
+                twitchOAuth.type = twitchOAuth.type === 'password' ? 'text' : 'password';
+            });
+
+            // Discord connection
+            connectDiscord.addEventListener('click', toggleDiscordConnection);
+            discordTest.addEventListener('click', testDiscordMessage);
+            showDiscordToken.addEventListener('click', () => {
+                discordToken.type = discordToken.type === 'password' ? 'text' : 'password';
+            });
+
+            // AI configuration
+            aiModel.addEventListener('change', updateModelConfig);
+            promptTemplate.addEventListener('change', updatePromptTemplate);
+            testAI.addEventListener('click', testAIResponse);
+
+            // Voice configuration
+            ttsEngine.addEventListener('change', updateTTSConfig);
+            speechRate.addEventListener('input', updateSpeechRateLabel);
+            voicePitch.addEventListener('input', updateVoicePitchLabel);
+            testTTS.addEventListener('click', testTTSVoice);
+
+            // Debug panel
+            debugToggle.addEventListener('click', toggleDebugPanel);
+            closeDebug.addEventListener('click', toggleDebugPanel);
+            fullDiagnostic.addEventListener('click', runFullDiagnostic);
+            exportLogs.addEventListener('click', exportDebugLogs);
+
+            // Interactions
+            sendChat.addEventListener('click', sendTestMessage);
+            triggerHappy.addEventListener('click', () => triggerEmotion('happy'));
+            triggerAngry.addEventListener('click', () => triggerEmotion('angry'));
+            triggerSurprise.addEventListener('click', () => triggerEmotion('surprise'));
+
+            // Text input enter key
+            chatMessage.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendTestMessage();
+            });
+
+            // TTS visualization bars
+            const bars = ttsVisualizer.querySelectorAll('.tts-bar');
+            bars.forEach(bar => {
+                bar.style.height = `${Math.random() * 80 + 20}%`;
+            });
+        }
+
+        // Set up tab navigation
+        function setupTabNavigation() {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons and contents
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('text-purple-400', 'border-purple-500');
+                        btn.classList.add('text-gray-400');
+                    });
+
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+
+                    // Add active class to clicked button and corresponding content
+                    button.classList.add('text-purple-400', 'border-purple-500');
+                    button.classList.remove('text-gray-400');
+
+                    const tabId = button.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        }
+
+        // Load default configuration
+        function loadDefaultConfig() {
+            // Set up event listeners for configuration changes
+            aiModel.value = 'gpt4';
+            updateModelConfig();
+
+            promptTemplate.value = 'vtuber';
+            updatePromptTemplate();
+
+            ttsEngine.value = 'elevenlabs';
+            updateTTSConfig();
+
+            // Set default character name if empty
+            if (!charName.value) charName.value = 'Aiko';
+
+            // Load creativity and response length labels
+            updateCreativityLabel();
+            updateResponseLengthLabel();
+
+            creativity.addEventListener('input', updateCreativityLabel);
+            responseLength.addEventListener('input', updateResponseLengthLabel);
+
+            // Initialize ElevenLabs key visibility toggle
+            document.getElementById('elevenLabsVoice').addEventListener('change', function() {
+                const customDiv = document.getElementById('elevenLabsCustomDiv');
+                customDiv.classList.toggle('hidden', this.value !== 'custom');
+            });
+        }
+
+        // Update model configuration UI
+        function updateModelConfig() {
+            const model = aiModel.value;
+            localModelConfig.classList.toggle('hidden', model !== 'local');
+
+            if (model === 'gpt4') {
+                logToConsole("Selected model: GPT-4 Turbo", "info");
+            } else if (model === 'claude') {
+                logToConsole("Selected model: Claude 3 Opus", "info");
+            } else if (model === 'local') {
+                logToConsole("Selected model: Local model", "info");
+            }
+        }
+
+        // Update prompt template UI
+        function updatePromptTemplate() {
+            const template = promptTemplate.value;
+            customTemplate.classList.toggle('hidden', template !== 'custom');
+
+            if (template === 'vtuber') {
+                logToConsole("Loaded default VTuber prompt template", "info");
+            } else if (template === 'custom') {
+                logToConsole("Using custom prompt template", "info");
+            }
+        }
+
+        // Update TTS configuration UI
+        function updateTTSConfig() {
+            const engine = ttsEngine.value;
+
+            elevenLabsConfig.classList.toggle('hidden', engine !== 'elevenlabs');
+            localTTSConfig.classList.toggle('hidden', engine !== 'local');
+
+            if (engine === 'elevenlabs') {
+                logToConsole("Selected TTS engine: ElevenLabs", "info");
+            } else if (engine === 'local') {
+                logToConsole("Selected TTS engine: Local TTS", "info");
+            }
+        }
+
+        // Update creativity label
+        function updateCreativityLabel() {
+            const value = parseFloat(creativity.value);
+            const label = creativity.nextElementSibling;
+
+            if (value < 0.7) {
+                label.textContent = "Precise";
+                label.className = "text-sm text-blue-400";
+            } else if (value < 1.3) {
+                label.textContent = "Balanced";
+                label.className = "text-sm text-purple-400";
+            } else {
+                label.textContent = "Creative";
+                label.className = "text-sm text-pink-400";
+            }
+        }
+
+        // Update response length label
+        function updateResponseLengthLabel() {
+            const value = parseInt(responseLength.value);
+            const label = responseLength.nextElementSibling;
+
+            if (value === 1) {
+                label.textContent = "Short";
+            } else if (value === 2) {
+                label.textContent = "Medium-Short";
+            } else if (value === 3) {
+                label.textContent = "Medium";
+            } else if (value === 4) {
+                label.textContent = "Medium-Long";
+            } else {
+                label.textContent = "Long";
+            }
+
+            label.className = "text-sm text-purple-400";
+        }
+
+        // Update speech rate label
+        function updateSpeechRateLabel() {
+            const value = parseFloat(speechRate.value);
+            const label = speechRate.nextElementSibling;
+
+            if (value < 0.8) {
+                label.textContent = "Slow";
+            } else if (value < 1.2) {
+                label.textContent = "Normal";
+            } else {
+                label.textContent = "Fast";
+            }
+
+            label.className = "text-sm text-purple-400";
+        }
+
+        // Update voice pitch label
+        function updateVoicePitchLabel() {
+            const value = parseFloat(voicePitch.value);
+            const label = voicePitch.nextElementSibling;
+
+            if (value < 0.95) {
+                label.textContent = "Low";
+            } else if (value < 1.05) {
+                label.textContent = "Normal";
+            } else {
+                label.textContent = "High";
+            }
+
+            label.className = "text-sm text-purple-400";
+        }
+
+        // Toggle VTube Studio connection
+        function toggleVTSConnection() {
+            if (isVTSConnected) {
+                disconnectVTS();
+            } else {
+                connectVTS.textContent = "Connecting...";
+                connectVTS.classList.add('pulse-connecting');
+                vtsStatus.textContent = "Connecting...";
+                vtsStatus.className = "px-2 py-1 rounded bg-yellow-700 text-sm";
+                previewStatus.textContent = "Connecting...";
+                previewStatus.className = "text-sm px-2 py-1 rounded bg-yellow-700";
+                logToConsole("Attempting to connect to VTube Studio API...");
+
+                // Simulate connection delay
+                setTimeout(() => {
+                    connectToVTS();
+                }, 1500 + Math.random() * 1000);
+            }
+        }
+
+        // Connect to VTube Studio
+        function connectToVTS() {
+            // For demo purposes, we'll simulate a connection that sometimes fails
+            const shouldFail = Math.random() < 0.2; // 20% chance of failure
+
+            if (shouldFail) {
+                showError("Failed to connect to VTube Studio API! Check if VTube Studio is running with API enabled.");
+                logToConsole("Failed to connect to VTube Studio API", "error");
+
+                connectVTS.textContent = "Connect";
+                connectVTS.classList.remove('pulse-connecting');
+                vtsStatus.textContent = "Connection Failed";
+                vtsStatus.className = "px-2 py-1 rounded bg-red-700 text-sm";
+                previewStatus.textContent = "Connection failed";
+                previewStatus.className = "text-sm px-2 py-1 rounded bg-red-700";
+            } else {
+                isVTSConnected = true;
+
+                connectVTS.textContent = "Disconnect";
+                connectVTS.classList.remove('pulse-connecting');
+                vtsStatus.textContent = "Connected";
+                vtsStatus.className = "px-2 py-1 rounded bg-green-700 text-sm";
+                previewStatus.textContent = "Live";
+                previewStatus.className = "text-sm px-2 py-1 rounded bg-green-700 animate-pulse";
+
+                // Enable model controls
+                resetPose.disabled = false;
+                toggleTracking.disabled = false;
+                reloadModel.disabled = false;
+                modelSettings.disabled = false;
+                triggerHotkey.disabled = false;
+
+                // Show model preview
+                previewPlaceholder.classList.add('hidden');
+                vtuberPreview.classList.remove('hidden');
+                vtuberPreview.src = "https://via.placeholder.com/800x1000/663399/ffffff?text=Live+VTuber";
+
+                // Update status dot
+                connectionStatusDot.className = "w-3 h-3 rounded-full bg-green-500 status-ring";
+                document.getElementById('vtsConnectionDot').className = "w-3 h-3 rounded-full bg-green-500 status-ring";
+                document.getElementById('modelStatusDot').className = "w-3 h-3 rounded-full bg-green-500";
+
+                // Update model name
+                document.getElementById('modelName').textContent = "Aiko (Default)";
+                document.getElementById('modelName').className = "text-green-400";
+
+                showSuccess("Successfully connected to VTube Studio!");
+                logToConsole("Successfully connected to VTube Studio", "success");
+                logToConsole(`Model loaded: Aiko (Default)`);
+                logToConsole(`Tracking resolution: 1280x720`);
+                logToConsole(`API version: 1.8.2`);
+            }
+        }
+
+        // Disconnect from VTube Studio
+        function disconnectVTS() {
+            isVTSConnected = false;
+
+            connectVTS.textContent = "Connect";
+            vtsStatus.textContent = "Not Connected";
+            vtsStatus.className = "px-2 py-1 rounded bg-gray-700 text-sm";
+            previewStatus.textContent = "Disconnected";
+            previewStatus.className = "text-sm px-2 py-1 rounded bg-gray-700";
+
+            // Disable model controls
+            resetPose.disabled = true;
+            toggleTracking.disabled = true;
+            reloadModel.disabled = true;
+            modelSettings.disabled = true;
+            triggerHotkey.disabled = true;
+
+            // Hide model preview
+            previewPlaceholder.classList.remove('hidden');
+            vtuberPreview.classList.add('hidden');
+
+            // Update status dot
+            connectionStatusDot.className = "w-3 h-3 rounded-full bg-gray-600";
+            document.getElementById('vtsConnectionDot').className = "w-3 h-3 rounded-full bg-gray-600";
+            document.getElementById('modelStatusDot').className = "w-3 h-3 rounded-full bg-gray-600";
+
+            // Update model name
+            document.getElementById('modelName').textContent = "No model loaded";
+            document.getElementById('modelName').className = "text-gray-400";
+
+            logToConsole("Disconnected from VTube Studio", "info");
+        }
+
+        // Test VTube Studio connection
+        function testVTSConnection() {
+            const port = vtsPort.value;
+
+            if (!port) {
+                showError("Please enter a port number");
+                return;
+            }
+
+            testVTS.textContent = "Testing...";
+            testVTS.disabled = true;
+            logToConsole(`Testing connection to port ${port}...`);
+
+            // Simulate test connection
+            setTimeout(() => {
+                if (Math.random() > 0.2) { // 80% chance of success
+                    showSuccess(`Success! Port ${port} is available for connection`);
+                    logToConsole(`Port ${port} is available`, "success");
+                } else {
+                    showError(`Failed to connect to port ${port}. Check if VTube Studio is running.`);
+                    logToConsole(`Failed to connect to port ${port}`, "error");
+                }
+
+                testVTS.textContent = "Test";
+                testVTS.disabled = false;
+            }, 1500);
+        }
+
+        // Reset model pose
+        function resetModelPose() {
+            logToConsole("Sending model reset command...");
+
+            // Visual feedback
+            vtuberPreview.style.filter = "brightness(1.5)";
+            setTimeout(() => {
+                vtuberPreview.style.filter = "";
+            }, 300);
+
+            logToConsole("Model pose reset", "success");
+        }
+
+        // Toggle face tracking
+        function toggleFaceTracking() {
+            if (toggleTracking.textContent.includes("Enable")) {
+                toggleTracking.innerHTML = '<i class="fas fa-eye-slash mr-2"></i>Disable';
+                toggleTracking.className = "bg-red-600 hover:bg-red-700 px-3 py-2 rounded-lg";
+                logToConsole("Face tracking enabled", "success");
+            } else {
+                toggleTracking.innerHTML = '<i class="fas fa-eye mr-2"></i>Enable';
+                toggleTracking.className = "bg-purple-600 hover:bg-purple-700 px-3 py-2 rounded-lg";
+                logToConsole("Face tracking disabled", "info");
+            }
+        }
+
+        // Reload current model
+        function reloadCurrentModel() {
+            logToConsole("Reloading current model...");
+            reloadModel.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>';
+
+            // Simulate reload delay
+            setTimeout(() => {
+                showSuccess("Model reloaded successfully");
+                logToConsole("Model reloaded successfully", "success");
+                reloadModel.innerHTML = '<i class="fas fa-redo"></i>';
+
+                // Visual feedback
+                vtuberPreview.style.opacity = "0.5";
+                setTimeout(() => {
+                    vtuberPreview.style.opacity = "1";
+                }, 300);
+            }, 2000);
+        }
+
+        // Open model settings
+        function openModelSettings() {
+            logToConsole("Opening model settings...");
+            showInfo("Model settings would open in a separate dialog in the full application");
+        }
+
+        // Configure hotkeys
+        function configureHotkeys() {
+            logToConsole("Opening hotkey configuration...");
+            showInfo("Hotkey configuration would open in a separate dialog in the full application");
+        }
+
+        // Toggle Twitch connection
+        function toggleTwitchConnection() {
+            if (isTwitchConnected) {
+                disconnectTwitch();
+            } else {
+                const channel = twitchChannel.value;
+                const oauth = twitchOAuth.value;
+
+                if (!channel || !oauth) {
+                    showError("Please enter both channel name and OAuth token");
+                    return;
+                }
+
+                connectTwitch.textContent = "Connecting...";
+                connectTwitch.classList.add('pulse-connecting');
+                twitchStatus.textContent = "Connecting...";
+                twitchStatus.className = "px-2 py-1 rounded bg-yellow-700 text-sm";
+                logToConsole("Attempting to connect to Twitch...");
+
+                // Simulate connection delay
+                setTimeout(() => {
+                    connectToTwitch(channel, oauth);
+                }, 1500);
+            }
+        }
+
+        // Connect to Twitch
+        function connectToTwitch(channel, oauth) {
+            // For demo purposes, we'll simulate a connection that sometimes fails
+            const shouldFail = Math.random() < 0.2; // 20% chance of failure
+
+            if (shouldFail) {
+                showError("Failed to connect to Twitch! Check your OAuth token and channel name.");
+                logToConsole("Failed to connect to Twitch", "error");
+
+                connectTwitch.textContent = "Connect";
+                connectTwitch.classList.remove('pulse-connecting');
+                twitchStatus.textContent = "Connection Failed";
+                twitchStatus.className = "px-2 py-1 rounded bg-red-700 text-sm";
+            } else {
+                isTwitchConnected = true;
+
+                connectTwitch.textContent = "Disconnect";
+                connectTwitch.classList.remove('pulse-connecting');
+                twitchStatus.textContent = "Connected";
+                twitchStatus.className = "px-2 py-1 rounded bg-green-700 text-sm";
+
+                // Update status dot
+                twitchStatusDot.className = "w-3 h-3 rounded-full bg-green-500";
+                document.getElementById('twitchDot').className = "w-3 h-3 rounded-full bg-green-500 status-ring";
+
+                showSuccess(`Successfully connected to Twitch channel ${channel}!`);
+                logToConsole("Successfully connected to Twitch", "success");
+                logToConsole(`Listening to channel: ${channel}`);
+
+                // For demo, simulate a chat message
+                setTimeout(() => {
+                    logToConsole(`[Twitch] User123: Hello from chat!`, "chat");
+                }, 2000);
+            }
+        }
+
+        // Disconnect from Twitch
+        function disconnectTwitch() {
+            isTwitchConnected = false;
+
+            connectTwitch.textContent = "Connect";
+            twitchStatus.textContent = "Disconnected";
+            twitchStatus.className = "px-2 py-1 rounded bg-gray-700 text-sm";
+
+            // Update status dot
+            twitchStatusDot.className = "w-3 h-3 rounded-full bg-gray-600";
+            document.getElementById('twitchDot').className = "w-3 h-3 rounded-full bg-gray-600 status-ring";
+
+            logToConsole("Disconnected from Twitch", "info");
+        }
+
+        // Test Twitch chat
+        function testTwitchChat() {
+            logToConsole("Sending test Twitch chat message...");
+            twitchTest.textContent = "Sending...";
+            twitchTest.disabled = true;
+
+            setTimeout(() => {
+                logToConsole(`[Twitch] TestUser: This is a test message from ${twitchChannel.value || "your channel"}!`, "chat");
+                showSuccess("Test chat message sent!");
+                twitchTest.textContent = "Test Chat";
+                twitchTest.disabled = false;
+            }, 1000);
+        }
+
+        // Toggle Discord connection
+        function toggleDiscordConnection() {
+            if (isDiscordConnected) {
+                disconnectDiscord();
+            } else {
+                const token = discordToken.value;
+                const channel = discordChannel.value;
+
+                if (!token || !channel) {
+                    showError("Please enter both bot token and channel ID");
+                    return;
+                }
+
+                connectDiscord.textContent = "Connecting...";
+                connectDiscord.classList.add('pulse-connecting');
+                discordStatus.textContent = "Connecting...";
+                discordStatus.className = "px-2 py-1 rounded bg-yellow-700 text-sm";
+                logToConsole("Attempting to connect to Discord...");
+
+                // Simulate connection delay
+                setTimeout(() => {
+                    connectToDiscord(token, channel);
+                }, 1500);
+            }
+        }
+
+        // Connect to Discord
+        function connectToDiscord(token, channel) {
+            // For demo purposes, we'll simulate a connection that sometimes fails
+            const shouldFail = Math.random() < 0.2; // 20% chance of failure
+
+            if (shouldFail) {
+                showError("Failed to connect to Discord! Check your bot token and channel ID.");
+                logToConsole("Failed to connect to Discord", "error");
+
+                connectDiscord.textContent = "Connect";
+                connectDiscord.classList.remove('pulse-connecting');
+                discordStatus.textContent = "Connection Failed";
+                discordStatus.className = "px-2 py-1 rounded bg-red-700 text-sm";
+            } else {
+                isDiscordConnected = true;
+
+                connectDiscord.textContent = "Disconnect";
+                connectDiscord.classList.remove('pulse-connecting');
+                discordStatus.textContent = "Connected";
+                discordStatus.className = "px-2 py-1 rounded bg-green-700 text-sm";
+
+                // Update status dot
+                discordStatusDot.className = "w-3 h-3 rounded-full bg-green-500";
+                document.getElementById('discordDot').className = "w-3 h-3 rounded-full bg-green-500 status-ring";
+
+                showSuccess("Successfully connected to Discord!");
+                logToConsole("Successfully connected to Discord", "success");
+                logToConsole(`Listening to channel ID: ${channel}`);
+
+                // For demo, simulate a message
+                setTimeout(() => {
+                    logToConsole(`[Discord] User456: Hello from Discord!`, "chat");
+                }, 2000);
+            }
+        }
+
+        // Disconnect from Discord
+        function disconnectDiscord() {
+            isDiscordConnected = false;
+
+            connectDiscord.textContent = "Connect";
+            discordStatus.textContent = "Disconnected";
+            discordStatus.className = "px-2 py-1 rounded bg-gray-700 text-sm";
+
+            // Update status dot
+            discordStatusDot.className = "w-3 h-3 rounded-full bg-gray-600";
+            document.getElementById('discordDot').className = "w-3 h-3 rounded-full bg-gray-600 status-ring";
+
+            logToConsole("Disconnected from Discord", "info");
+        }
+
+        // Test Discord message
+        function testDiscordMessage() {
+            logToConsole("Sending test Discord message...");
+            discordTest.textContent = "Sending...";
+            discordTest.disabled = true;
+
+            setTimeout(() => {
+                logToConsole(`[Discord] TestBot: This is a test message to channel ${discordChannel.value || "your channel"}!`, "chat");
+                showSuccess("Test message sent to Discord!");
+                discordTest.textContent = "Test Message";
+                discordTest.disabled = false;
+            }, 1000);
+        }
+
+        // Test AI response
+        function testAIResponse() {
+            const model = aiModel.value;
+            const prompt = promptTemplate.value;
+
+            logToConsole(`Testing AI response with ${model} and ${prompt} template...`);
+            testAI.textContent = "Thinking...";
+            testAI.disabled = true;
+
+            // Generate a random response based on model
+            const responses = {
+                gpt4: [
+                    "Hello everyone! I'm your cheerful VTuber assistant, ready to chat and have fun today!",
+                    "Oh? You want to test my responses? Well, I'm happy to oblige~!",
+                    "How's everyone doing today? I'm all set up and ready to entertain you!"
+                ],
+                claude: [
+                    "Greetings! I'm here to engage in thoughtful conversation and provide helpful insights.",
+                    "This is a test response demonstrating my natural language capabilities.",
+                    "As an AI assistant, I aim to be helpful, harmless, and honest in our interactions."
+                ],
+                llama3: [
+                    "Hola hola! Testing 1 2 3! *waves energetically* Can you hear me okay?",
+                    "Oh wow, you're testing me? That's so cool! I can't wait to chat properly!",
+                    "*adjusts virtual hair* Hello hello~! Just testing my responses here!"
+                ]
+            };
+
+            // Select random response
+            setTimeout(() => {
+                const modelResponses = responses[model] || responses.gpt4;
+                const randomResponse = modelResponses[Math.floor(Math.random() * modelResponses.length)];
+
+                aiResponse.innerHTML = `<p class="text-green-400">${randomResponse}</p>`;
+                logToConsole(`AI response test successful: "${randomResponse}"`, "success");
+
+                testAI.textContent = "Test AI Response";
+                testAI.disabled = false;
+
+                // If connected to TTS, trigger a test voice
+                if (Math.random() > 0.5) {
+                    simulateTTS(randomResponse);
+                }
+            }, 1500 + Math.random() * 1000);
+        }
+
+        // Test TTS voice
+        function testTTSVoice() {
+            const text = ttsTestText.value || "Hello everyone! How are you doing today?";
+
+            if (isTTSTesting) return;
+            isTTSTesting = true;
+
+            logToConsole(`Testing TTS with: "${text}"`);
+            testTTS.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+            // Show visualization
+            ttsVisualization.classList.remove('hidden');
+
+            // Animate the visualization bars
+            const bars = ttsVisualizer.querySelectorAll('.tts-bar');
+            const animationInterval = setInterval(() => {
+                bars.forEach(bar => {
+                    bar.style.height = `${Math.random() * 80 + 20}%`;
+                });
+            }, 100);
+
+            // Simulate TTS processing
+            setTimeout(() => {
+                clearInterval(animationInterval);
+                isTTSTesting = false;
+                testTTS.innerHTML = '<i class="fas fa-play"></i>';
+
+                // Reset bars to idle state
+                bars.forEach(bar => {
+                    bar.style.height = `${Math.random() * 30 + 10}%`;
+                });
+
+                logToConsole("TTS test completed successfully", "success");
+                showSuccess("Voice test completed. Check your audio output!");
+            }, 2000 + text.length * 50);
+        }
+
+        // Simulate TTS for AI responses
+        function simulateTTS(text) {
+            // Just log it for the demo
+            logToConsole(`[TTS] Speaking: "${text}"`, "tts");
+
+            // For demo, just show visualization briefly
+            ttsVisualization.classList.remove('hidden');
+            const bars = ttsVisualizer.querySelectorAll('.tts-bar');
+
+            const animationInterval = setInterval(() => {
+                bars.forEach(bar => {
+                    bar.style.height = `${Math.random() * 80 + 20}%`;
+                });
+            }, 100);
+
+            setTimeout(() => {
+                clearInterval(animationInterval);
+
+                // Reset bars to idle state
+                bars.forEach(bar => {
+                    bar.style.height = `${Math.random() * 30 + 10}%`;
+                });
+            }, 1500);
+        }
+
+        // Send test message to AI
+        function sendTestMessage() {
+            const message = chatMessage.value;
+
+            if (!message) {
+                showError("Please enter a message to send");
+                return;
+            }
+
+            logToConsole(`Sending test message: "${message}"`, "chat");
+            aiResponse.innerHTML = `<p class="text-gray-400">Thinking...</p>`;
+            sendChat.disabled = true;
+            chatMessage.disabled = true;
+
+            // Simulate AI processing time
+            setTimeout(() => {
+                // Generate a response based on the message
+                let response;
+
+                if (message.toLowerCase().includes('hello') || message.toLowerCase().includes('hi')) {
+                    response = `Oh hello there! *waves energetically* Thanks for saying "${message}" to me!`;
+                } else if (message.toLowerCase().includes('how are you')) {
+                    response = "I'm doing great, thanks for asking! All my systems are functioning perfectly~";
+                } else if (message.toLowerCase().includes('name')) {
+                    response = `My name is ${charName.value || "Aiko"}! Nice to meet you! *bows politely*`;
+                } else {
+                    const randomResponses = [
+                        `Hmm, "${message}" is an interesting thing to say! What do you mean by that?`,
+                        "*tilts head* I'm not sure I understand completely, but I'd love to chat more about it!",
+                        `Oh! You said "${message}"! That's really cool~!`,
+                        "I'm still learning, but I'll do my best to respond thoughtfully!"
+                    ];
+                    response = randomResponses[Math.floor(Math.random() * randomResponses.length)];
+                }
+
+                aiResponse.innerHTML = `<p class="text-green-400">${response}</p>`;
+                logToConsole(`AI response: "${response}"`, "ai");
+
+                sendChat.disabled = false;
+                chatMessage.disabled = false;
+                chatMessage.value = "";
+
+                // If connected to TTS, trigger the voice
+                if (Math.random() > 0.3) {
+                    simulateTTS(response);
+                }
+            }, 1000 + Math.random() * 2000);
+        }
+
+        // Trigger emotion reaction
+        function triggerEmotion(emotion) {
+            if (!isVTSConnected) {
+                showError("Connect to VTube Studio first to trigger emotions");
+                return;
+            }
+
+            logToConsole(`Triggering ${emotion} emotion...`, "emotion");
+
+            // Visual feedback on the preview
+            let filter = "";
+            let emoji = "";
+
+            switch(emotion) {
+                case 'happy':
+                    filter = "brightness(1.2) saturate(1.3)";
+                    emoji = "😊";
+                    break;
+                case 'angry':
+                    filter = "hue-rotate(-20deg) brightness(1.1) saturate(1.5)";
+                    emoji = "😠";
+                    break;
+                case 'surprise':
+                    filter = "brightness(1.4) contrast(1.2)";
+                    emoji = "😲";
+                    break;
+            }
+
+            vtuberPreview.style.filter = filter;
+            aiResponse.innerHTML = `<p class="text-yellow-400">${emoji} ${charName.value || "VTuber"} looks ${emotion} now!</p>`;
+
+            setTimeout(() => {
+                vtuberPreview.style.filter = "";
+            }, 2000);
+
+            logToConsole(`Emotion triggered: ${emotion}`, "success");
+        }
+
+        // Toggle debug panel
+        function toggleDebugPanel() {
+            debugPanel.classList.toggle('hidden');
+            debugToggle.classList.toggle('bg-blue-600');
+
+            if (!debugPanel.classList.contains('hidden')) {
+                logToConsole("Debug console opened", "info");
+            }
+        }
+
+        // Log to debug console
+        function logToConsole(message, type = "info") {
+            const timestamp = new Date().toLocaleTimeString();
+            const messageDiv = document.createElement('div');
+
+            // Format the log message with type and timestamp
+            switch(type) {
+                case "error":
+                    messageDiv.className = "text-red-400";
+                    message = `[${timestamp}] ERROR: ${message}`;
+                    break;
+                case "success":
+                    messageDiv.className = "text-green-400";
+                    message = `[${timestamp}] SUCCESS: ${message}`;
+                    break;
+                case "warning":
+                    messageDiv.className = "text-yellow-400";
+                    message = `[${timestamp}] WARNING: ${message}`;
+                    break;
+                case "chat":
+                    messageDiv.className = "text-blue-300";
+                    message = `[${timestamp}] CHAT: ${message}`;
+                    break;
+                case "ai":
+                    messageDiv.className = "text-purple-300";
+                    message = `[${timestamp}] AI: ${message}`;
+                    break;
+                case "tts":
+                    messageDiv.className = "text-pink-300";
+                    message = `[${timestamp}] TTS: ${message}`;
+                    break;
+                case "emotion":
+                    messageDiv.className = "text-yellow-300";
+                    message = `[${timestamp}] EMOTION: ${message}`;
+                    break;
+                default:
+                    messageDiv.className = "text-gray-400";
+                    message = `[${timestamp}] INFO: ${message}`;
+            }
+
+            // Add to console and scroll to bottom
+            messageDiv.textContent = message;
+            debugConsole.appendChild(messageDiv);
+            debugConsole.scrollTop = debugConsole.scrollHeight;
+
+            // Save to debug logs
+            debugLogs.push({
+                timestamp: new Date().toISOString(),
+                type,
+                message: message.replace(/^\[.*?\]\s*/, '') // Remove timestamp for storage
+            });
+        }
+
+        // Run full diagnostic
+        function runFullDiagnostic() {
+            logToConsole("Running full system diagnostic...", "info");
+            fullDiagnostic.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Diagnosing...';
+            fullDiagnostic.disabled = true;
+
+            // Start with all systems
+            const systems = [
+                "VTube Studio Connection",
+                "Twitch Integration",
+                "Discord Integration",
+                "AI Personality System",
+                "TTS Engine",
+                "Speech Processing"
+            ];
+
+            let delay = 1000;
+            systems.forEach((system, index) => {
+                setTimeout(() => {
+                    // Random pass/fail
+                    const passed = Math.random() > 0.3;
+
+                    if (passed) {
+                        logToConsole(`${system}: OK`, "success");
+                    } else {
+                        logToConsole(`${system}: Warning - ${randomIssue(system)}`, "warning");
+                    }
+
+                    // On last system, complete diagnostic
+                    if (index === systems.length - 1) {
+                        setTimeout(() => {
+                            logToConsole("System diagnostic completed", "info");
+                            showSuccess("System diagnostic completed");
+
+                            fullDiagnostic.innerHTML = '<i class="fas fa-stethoscope mr-2"></i>Full Diagnostic';
+                            fullDiagnostic.disabled = false;
+                        }, 500);
+                    }
+                }, delay);
+
+                delay += 800 + Math.random() * 700;
+            });
+        }
+
+        // Generate random issue for diagnostic
+        function randomIssue(system) {
+            const issues = {
+                "VTube Studio Connection": [
+                    "High latency detected",
+                    "Model loading slowly",
+                    "API version mismatch"
+                ],
+                "Twitch Integration": [
+                    "Chat connection unstable",
+                    "Moderation filters not configured",
+                    "Rate limit approaching"
+                ],
+                "Discord Integration": [
+                    "Bot permissions need review",
+                    "Channel visibility issue",
+                    "Message queue backlog detected"
+                ],
+                "AI Personality System": [
+                    "Context memory fragmented",
+                    "Response latency above threshold",
+                    "Creativity scoring inconsistent"
+                ],
+                "TTS Engine": [
+                    "Voice artifacts detected",
+                    "Pronunciation dictionary needs updates",
+                    "Pitch modulation unstable"
+                ],
+                "Speech Processing": [
+                    "Background noise detected",
+                    "Voice activation sensitivity too high",
+                    "Speech-to-text confidence low"
+                ]
+            };
+
+            return issues[system][Math.floor(Math.random() * issues[system].length)];
+        }
+
+        // Export debug logs
+        function exportDebugLogs() {
+            logToConsole("Exporting debug logs...", "info");
+
+            // Convert logs to JSON
+            const logsJSON = JSON.stringify(debugLogs, null, 2);
+
+            // Create download link
+            const blob = new Blob([logsJSON], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `vtuber-debug-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showSuccess("Debug logs exported successfully");
+            logToConsole("Debug logs exported successfully", "success");
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = "bg-red-900 text-white rounded-lg px-4 py-2 absolute bottom-4 right-4 animate-fade-in";
+            errorDiv.innerHTML = `<i class="fas fa-exclamation-circle mr-2"></i> ${message}`;
+
+            document.body.appendChild(errorDiv);
+
+            setTimeout(() => {
+                errorDiv.classList.add('animate-fade-out');
+                setTimeout(() => {
+                    document.body.removeChild(errorDiv);
+                }, 500);
+            }, 5000);
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = "bg-green-900 text-white rounded-lg px-4 py-2 absolute bottom-4 right-4 animate-fade-in";
+            successDiv.innerHTML = `<i class="fas fa-check-circle mr-2"></i> ${message}`;
+
+            document.body.appendChild(successDiv);
+
+            setTimeout(() => {
+                successDiv.classList.add('animate-fade-out');
+                setTimeout(() => {
+                    document.body.removeChild(successDiv);
+                }, 500);
+            }, 5000);
+        }
+
+        // Show info message
+        function showInfo(message) {
+            const infoDiv = document.createElement('div');
+            infoDiv.className = "bg-blue-900 text-white rounded-lg px-4 py-2 absolute bottom-4 right-4 animate-fade-in";
+            infoDiv.innerHTML = `<i class="fas fa-info-circle mr-2"></i> ${message}`;
+
+            document.body.appendChild(infoDiv);
+
+            setTimeout(() => {
+                infoDiv.classList.add('animate-fade-out');
+                setTimeout(() => {
+                    document.body.removeChild(infoDiv);
+                }, 500);
+            }, 5000);
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+﻿@using Data.SpectralVoice
+@* @if (Prams != null)
+{
+    <div class="bg-gray-700 p-4 rounded-lg">
+        <span class="text-sm text-gray-300 block mb-1">@Prams.DataBuild.Name</span>
+        <select id="frequencyRange" class="w-full bg-gray-800 text-white rounded px-3 py-2 text-sm outline-none">
+            @foreach (var full in Prams.DataBuild.Full)
+            {
+                <option value="@full">@full</option>
+            }
+          
+        </select>
+    </div>
+
+
+    
+}
+@code {
+    [Parameter] public ListDataVolumevoice? Prams { get; set; }
+
+    
+} *@
+@*
+   <div class="bg-gray-700 p-4 rounded-lg">
+                <span class="text-sm text-gray-300 block mb-1">Frequency Range</span>
+                <select id="frequencyRange" class="w-full bg-gray-800 text-white rounded px-3 py-2 text-sm outline-none">
+                    <option value="full">Full Spectrum</option>
+                    <option value="voice">Voice Range (80-300Hz)</option>
+                    <option value="high">High Frequencies</option>
+                    <option value="low">Low Frequencies</option>
+                </select>
+            </div>
+
+// [Parameter]
+    // public int SelectedValue { get; set; }
+
+    // [Parameter]
+    // public EventCallback<int> SelectedValueChanged { get; set; }
+
+    // private List<int> Sizes { get; set; } = new() { 64, 128, 256, 512, 1024, 2048, 4096 };
+
+    // protected override async Task OnParametersSetAsync()
+    // {
+    //     await SelectedValueChanged.InvokeAsync(SelectedValue);
+    // } *@
+
+
+
+<button id="@Prams.DataBuild.Id" class="w-full py-3 px-4 @Prams.DataBuild.BackgroundColor @Prams.DataBuild.HoverColor rounded-lg font-medium mb-4 flex items-center justify-center">
+    <i class="@Prams.DataBuild.Icon mr-2"></i>
+    @Prams.DataBuild.Label
+    </button>
+
+
+@code {
+    [Parameter] public ListDataMicToggleButton? Prams { get; set; }
+}

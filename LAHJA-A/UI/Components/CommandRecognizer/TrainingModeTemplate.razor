@@ -1,0 +1,110 @@
+﻿@using Data.Non
+@using LAHJA_A.UI.Components.CommandRecognizer.TrainingMode
+@using LAHJA_A.UI.Components.CommandRecognizer.YourCommands
+@using LAHJA_A.UI.Components.CommandRecognizer
+
+
+@* @foreach (var p in Prams.Items)
+{
+    <CardAdd Prams="p" />
+} *@
+<DebugPanelCard Prams="Prams" />
+@code {
+    private void RecordSample() { /* منطق التسجيل */ }
+    private void TrainModel() { /* منطق التدريب */ }
+    private void TestModel() { /* منطق الاختبار */ }
+    private List<DataCardListNonModul> Debug = new List<DataCardListNonModul>
+    {
+           new DataCardListNonModul
+        {
+
+            modul3= new()
+            {
+                    Name = " Recognition Mode",
+                    Title = "Predicted Command",
+                    Icon ="fas fa-robot",
+                    RecognizedCommand="Waiting for command...",
+                    ItemButton= new()
+                    {
+                        new()
+                {
+                     Label = " Record Command",
+                IconClass = "fas fa-microphone",
+                CssClass = "gradient-bg hover:opacity-90 flex-1 py-3 rounded-lg font-medium transition flex items-center justify-center pulse-animation",
+              //  Callback = EventCallback.Factory.Create(this, RecordSample)
+                },
+                 new()
+                {
+                    Label = "Continuous Mode",
+                IconClass = "fas fa-circle-notch",
+                CssClass = "bg-gray-700 hover:bg-gray-600 flex-1 py-3 rounded-lg font-medium transition flex items-center justify-center",
+              //  Callback = EventCallback.Factory.Create(this, TrainModel)
+                },
+                    }
+            },
+              Items = new()
+            {
+                new()
+                {
+                    Title = "Training Command",
+                    Value = "None selected", // استخدم متغير مؤقت أو تمرره من الأعلى
+                    ValueClass = "bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500"
+                },
+                new()
+                {
+                    Title = "Training Samples",
+                    Value = "0",
+                    SubText = "Minimum 5 samples needed"
+                }
+            },
+             ItemButton = new()
+            {
+                new()
+                {
+                     Label = "Record Sample",
+                IconClass = "fas fa-microphone",
+                CssClass = "gradient-bg hover:opacity-90",
+              //  Callback = EventCallback.Factory.Create(this, RecordSample)
+                },
+                new()
+                {
+                    Label = "Train Model",
+                IconClass = "fas fa-brain",
+                CssClass = "bg-gray-700 hover:bg-gray-600",
+              //  Callback = EventCallback.Factory.Create(this, TrainModel)
+                },
+                  new()
+                {
+                   Label = "Test Model",
+                IconClass = "fas fa-vial",
+                CssClass = "border border-purple-500 text-purple-400 hover:bg-purple-900 hover:bg-opacity-30",
+                //Callback = EventCallback.Factory.Create(this, TestModel)
+                }
+            }
+
+               
+
+
+           // Items = new List<DataCardListModulw>()
+        }
+    };
+    
+    [Parameter]
+    public DataCardListNonModul? DataBuild { get; set; }
+
+    [Parameter]
+    public CardListNoneModul Prams { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        if (DataBuild == null)
+        {
+            DataBuild = Debug[0];
+         
+        }
+      
+        Prams = CardListNoneModul.Create(DataBuild);
+        base.OnInitialized();
+    }
+}

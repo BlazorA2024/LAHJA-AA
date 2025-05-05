@@ -1,0 +1,27 @@
+﻿@using LAHJA_A.UI.Components.SpectralAnalyzer.CardAddControl
+@using LAHJA_A.UI.Components.SpectralAnalyzer.CardFrequencyDetails
+@using dApp.Spectral
+
+@if(Prams != null){
+<div class="container mx-auto px-4 py-8">
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+            @Prams.DataBuild.Name
+        </h1>
+        <p class="text-gray-400">@Prams.DataBuild.Description</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+     
+            <SpectralVisualizer Prams="Prams.IAnal" />
+        <CardAddControls Prams="Prams.IControls" />
+       
+    </div>
+
+        <CardFrequencyView Prams="Prams.Ifreq" />
+</div>
+}
+@code {
+    [Parameter] public CardListDataAddSpectral? Prams { get; set; }
+
+}

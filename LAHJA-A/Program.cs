@@ -1,3 +1,4 @@
+using ApexCharts;
 using LAHJA_A;
 using LAHJA_A.Pages;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
@@ -67,6 +68,8 @@ builder.Services.AddSession(options =>
 });
 
 //builder.Services.AddSingleton<FoctorHttpClient>(sp => new FoctorHttpClient("https://localhost:7177/"));
+
+     // ÅÖÇİÉ ÇáÎÏãÉ ááãÔÑæÚ
 
 
 var app = builder.Build();

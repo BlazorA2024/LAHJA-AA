@@ -1,0 +1,51 @@
+﻿@using Data.CharacterModels
+<!-- AI Chat Section -->
+<section id="chat" class="py-16 bg-dark-800">
+    @if (Prams != null )
+                    {
+    <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                <span class="gradient-text">@Prams.DataBuild.Name</span> @Prams.DataBuild.Title
+        </h2>
+        <p class="text-lg text-gray-400 max-w-2xl mx-auto">
+            @Prams.DataBuild.Description
+        </p>
+    </div>
+    <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Character Selection -->
+        <div class="lg:w-1/4">
+            <div class="bg-dark-700 rounded-xl p-6 sticky top-24">
+                <h3 class="text-xl font-semibold text-white mb-4">AI Prams</h3>
+                <div class="space-y-3">
+                    
+                        @foreach (var item in Prams.Items)
+                        {
+                            <CardCharacterModels Prams="item" />
+                        }
+                    
+
+                    <!-- Add Character Button -->
+                    <button class="w-full mt-4 p-3 rounded-lg border-2 border-dashed border-dark-600 hover:border-purple-500 text-gray-400 hover:text-purple-400 transition flex items-center justify-center">
+                        <i class="fas fa-plus mr-2"></i> Add Custom Character
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+                    }
+</section>
+
+@code {
+    [Parameter]
+    public CardListUnifiedProjectModul? Prams { get; set; }
+    
+
+}
+@* <div class="text-center mb-12">
+    <h2 class="text-3xl md:text-4xl font-bold mb-4">
+        <span class="gradient-text">AI Chat</span> Experience
+    </h2>
+    <p class="text-lg text-gray-400 max-w-2xl mx-auto">
+        Interact with advanced AI characters and experience natural conversations
+    </p>
+</div> *@

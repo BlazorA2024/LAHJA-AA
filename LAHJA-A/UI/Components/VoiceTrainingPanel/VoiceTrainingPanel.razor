@@ -1,0 +1,97 @@
+﻿<div class="lg:col-span-2 space-y-6">
+
+    <!-- Training Mode -->
+    <div class="bg-gray-800 rounded-xl p-6">
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fas fa-microphone-alt mr-2"></i> Training Mode
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="bg-gray-700 rounded-lg p-4">
+                <h3 class="font-medium mb-2">Training Command</h3>
+                <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
+                    @CurrentCommand
+                </div>
+            </div>
+            <div class="bg-gray-700 rounded-lg p-4">
+                <h3 class="font-medium mb-2">Training Samples</h3>
+                <div class="text-2xl font-bold">@SampleCount</div>
+                <div class="text-sm text-gray-300">Minimum 5 samples needed</div>
+            </div>
+        </div>
+
+        <div class="relative h-40 bg-gray-900 rounded-lg mb-4">
+            <!-- Canvas placeholders for waveform & spectrogram -->
+            <p class="text-center text-gray-500 py-16">[ Audio Visualization ]</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-4">
+            <button @onclick="RecordSample" class="gradient-bg hover:opacity-90 flex-1 py-3 rounded-lg font-medium transition flex items-center justify-center">
+                <i class="fas fa-microphone mr-2"></i> Record Sample
+            </button>
+            <button @onclick="TrainModel" class="bg-gray-700 hover:bg-gray-600 flex-1 py-3 rounded-lg font-medium transition flex items-center justify-center">
+                <i class="fas fa-brain mr-2"></i> Train Model
+            </button>
+            <button @onclick="TestModel" class="border border-purple-500 text-purple-400 hover:bg-purple-900 hover:bg-opacity-30 flex-1 py-3 rounded-lg font-medium transition flex items-center justify-center">
+                <i class="fas fa-vial mr-2"></i> Test Model
+            </button>
+        </div>
+    </div>
+
+    <!-- Recognition Mode -->
+    <div class="bg-gray-800 rounded-xl p-6">
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fas fa-robot mr-2"></i> Recognition Mode
+        </h2>
+
+        <div class="bg-gray-700 rounded-lg p-4 mb-4">
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="font-medium">Predicted Command</h3>
+                <div class="text-sm font-medium">@($"{Confidence}% confidence")</div>
+            </div>
+            <div class="text-3xl font-bold text-center py-4">
+                @PredictedCommand
+            </div>
+            <div class="h-2 bg-gray-600 rounded overflow-hidden">
+                <div class="bg-purple-500 h-full transition-all duration-300" style="@GetConfidenceStyle()"></div>
+            </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+            <button class="gradient-bg hover:opacity-90 flex-1 py-3 rounded-lg font-medium transition flex items-center justify-center">
+                <i class="fas fa-microphone mr-2"></i> Record Command
+            </button>
+            <button class="bg-gray-700 hover:bg-gray-600 flex-1 py-3 rounded-lg font-medium transition flex items-center justify-center">
+                <i class="fas fa-circle-notch mr-2"></i> Continuous Mode
+            </button>
+        </div>
+    </div>
+</div>
+@code {
+    private string CurrentCommand = "None selected";
+    private int SampleCount = 0;
+    private string PredictedCommand = "Waiting for command...";
+    private double Confidence = 0;
+    private bool IsRecording = false;
+
+    private void RecordSample()
+    {
+        IsRecording = true;
+        SampleCount++;
+        StateHasChanged();
+    }
+
+    private void TrainModel()
+    {
+        // Simulate training or call backend
+    }
+
+    private void TestModel()
+    {
+        // Simulate prediction
+        PredictedCommand = "Turn on the lights";
+        Confidence = 87.5;
+    }
+
+    private string GetConfidenceStyle() => $"width: {Confidence}%;";
+}

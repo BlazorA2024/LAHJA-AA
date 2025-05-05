@@ -1,0 +1,28 @@
+﻿@using Data.ExperienceDetails
+<!-- Experience Section -->
+<section id="experience" class="py-16 px-6">
+    @if (Prams != null)
+    {
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold mb-12 text-center section-title">
+                <span class="gradient-text">@Prams.DataBuild.Name</span>
+            </h2>
+
+            <div class="max-w-3xl mx-auto">
+
+                @foreach (var item in Prams.Items)
+                {
+
+                    <CardExperienceDetailsModul Prams="item" />
+                }
+
+            </div>
+        </div>
+    }
+</section>
+
+@code {
+    [Parameter] public CardListUnifiedExperienceDetailsModel? Prams { get; set; }
+
+
+}

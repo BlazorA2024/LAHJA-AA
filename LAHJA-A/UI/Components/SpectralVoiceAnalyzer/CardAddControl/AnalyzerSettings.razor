@@ -1,0 +1,29 @@
+﻿@* @using Data.SpectralVoice
+
+<div class="bg-gray-700 p-4 rounded-lg">
+    <span class="text-sm text-gray-300 block mb-1">@Prams.DataBuild?.Name</span>
+    <select id="frequencyRange" class="w-full bg-gray-800 text-white rounded px-3 py-2 text-sm outline-none">
+        @foreach (var item in Prams.DataBuild.Full)
+        {
+            <option value="@item">@item</option>
+        }
+    </select>
+</div> *@
+@using Data.SpectralVoice
+
+<div class="bg-gray-700 p-4 rounded-lg">
+    <span class="text-sm text-gray-300 block mb-1">@Prams.DataBuild?.Name</span>
+    <select class="w-full bg-gray-800 text-white rounded px-3 py-2 text-sm outline-none"
+            @bind="Prams.DataBuild.SelectedValue">
+        @foreach (var option in Prams.DataBuild.Options)
+        {
+            <option value="@option">@option</option>
+        }
+    </select>
+</div>
+
+@code {
+    [Parameter] public ListDataAnalyzerSettings? Prams { get; set; }
+
+   
+}

@@ -1,0 +1,40 @@
+﻿@* @using dApp.Services
+@if(Prams !=null){
+<div id="commandList" class="space-y-4">
+        @foreach (var command in Prams.DataBuild.Commands)
+    {
+        <div class="bg-gray-700 text-white px-4 py-2 rounded flex justify-between items-center">
+            <span>@command</span>
+            <button class="text-red-400 hover:text-red-600" @onclick="() => RemoveCommand(command)">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        </div>
+    }
+</div>
+
+}
+@code {
+    [Parameter] public ListUnifiedModul? Prams { get; set; }
+
+   
+
+} *@
+@using dApp.Debug
+@if(Prams !=null){
+<div class="mt-6">
+    <h3 class="font-medium mb-2">@Prams.DataBuild.Title</h3>
+    <div class="flex">
+        <input @bind="Prams.DataBuild.NewCommand" placeholder="@Prams.DataBuild.NamCommand"
+               class="flex-1 bg-gray-700 border border-gray-600 rounded-l-lg px-4 py-2" />
+        <button class="gradient-bg px-4 py-2 rounded-r-lg font-medium"
+                @onclick="@Prams.DataBuild.OnAddCommand">
+            <i class="@Prams.DataBuild.Icon"></i>
+        </button>
+    </div>
+</div>
+}
+@code {
+    [Parameter] public ListUnifiedModul2? Prams { get; set; }
+
+ 
+}

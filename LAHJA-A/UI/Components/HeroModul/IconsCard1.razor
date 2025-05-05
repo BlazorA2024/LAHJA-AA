@@ -1,0 +1,19 @@
+﻿
+@using Data.HeroModul
+
+@if (Prams != null)
+{
+    <a href="@Prams.DataBuild.Link" class="@Prams.DataBuild.IconColor
+           ">
+        @if (!string.IsNullOrEmpty(Prams.DataBuild.Icon))
+        {
+            <i class="@Prams.DataBuild.Icon"></i>
+        }
+    </a>
+
+}
+
+@code {
+
+    [Parameter] public ListUnifiedToolsModul? Prams { get; set; }
+} 

@@ -1,0 +1,42 @@
+@keyframes pulse {
+    0% {
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.4;
+    }
+}
+
+.pulse {
+    animation: pulse 1.5s infinite;
+}
+
+/*canvas {
+    background: linear-gradient(to bottom, #1e3a8a, #0f172a);
+}*/
+.canva {
+    background: linear-gradient(to bottom, #1e3a8a, #0f172a);
+}
+
+.bar-container {
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 2px;
+    padding: 10px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+}
+
+.frequency-bar {
+    background: linear-gradient(to top, #3b82f6, #93c5fd);
+    width: 8px;
+    border-radius: 4px 4px 0 0;
+    transition: height 0.1s ease-out;
+}

@@ -1,0 +1,54 @@
+﻿@using Data.DataHeaderModels
+
+<HeaderCard1 Prams="Prams" />
+
+
+@code {
+    private DataCardListHeaderModel headerModel = new()
+        {
+            Name = "Discover",
+            Title = "the Best AI Tools",
+            Description = "Explore our curated collection of cutting-edge AI tools to boost your productivity and creativity.",
+            Image = "https://images.unsplash.com/photo-1677442135136-760c813a743d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+            SearchPlaceholder = "Search AI tools...",
+            ButtonLabel = "Search",
+            IsAdultModeEnabled = false,
+            IsBlurNsfwEnabled = true,
+            AdvancedFiltersText = "More Filters"
+        };
+    [Parameter]
+    public DataCardListHeaderModel? DataBuild { get; set; }
+
+
+
+    private CardListHeaderModel Prams;
+
+    protected override void OnInitialized()
+    {
+        if (DataBuild == null)
+        {
+
+            DataBuild = new DataCardListHeaderModel
+                {
+                  
+                    Name = "Discover",
+                    Title = "the Best AI Tools",
+                    Description = "Explore our curated collection of cutting-edge AI tools to boost your productivity and creativity.",
+                    Image = "https://images.unsplash.com/photo-1677442135136-760c813a743d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+                    SearchPlaceholder = "Search AI tools...",
+                    ButtonLabel = "Search",
+                    IsAdultModeEnabled = false,
+                    IsBlurNsfwEnabled = true,
+                    AdvancedFiltersText = "More Filters"
+
+           
+
+                };
+        }
+
+        Prams = CardListHeaderModel.Create(DataBuild);
+
+        // Prams.ClassItem = "gdfgd";
+        base.OnInitialized();
+    }
+}

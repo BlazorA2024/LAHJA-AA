@@ -1,0 +1,27 @@
+﻿
+ @using Data.ToolsModul
+      @*    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+ @foreach (var item in Prams.Items)
+{
+    <ToolCardComponent1 Prams="item" />
+}
+</div>
+@code {
+    [Parameter]
+
+    public CardListUnifiedToolsModul? Prams { set; get; }
+}
+ *@
+ @if(Prams !=null){
+<div class="text-center mt-12">
+    <button class="px-6 py-3 rounded-full gradient-bg text-white hover:opacity-90 transition font-medium">
+        <i class="fas fa-plus mr-2"></i>@Prams.DataBuild.Title 
+    </button>
+</div>
+ }
+@code {
+    [Parameter]
+
+    public CardListUnifiedToolsModul? Prams { set; get; }
+}

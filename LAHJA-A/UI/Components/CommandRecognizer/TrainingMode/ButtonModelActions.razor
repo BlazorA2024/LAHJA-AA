@@ -1,0 +1,13 @@
+﻿@using Data.Non
+    @if (Prams !=null)
+    {
+        <Prams.DataBuild @onclick="Prams.DataBuild.Callback"
+                class="@Prams.DataBuild.CssClass flex-1 py-3 rounded-lg font-medium transition flex items-center justify-center">
+            <i class="@Prams.DataBuild.IconClass mr-2"></i> @Prams.DataBuild.Label
+        </Prams.DataBuild>
+    }
+
+
+@code {
+    [Parameter] public ListModelActionButtons Prams { get; set; } 
+}
