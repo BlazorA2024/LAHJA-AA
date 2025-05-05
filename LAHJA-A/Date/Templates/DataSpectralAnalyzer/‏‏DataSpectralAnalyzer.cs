@@ -20,11 +20,68 @@ namespace dApp.Spectral
 
     }
 
+    public class StyleListDataVolumevoice : StyleBaseComponentCard
+    {
+        [Parameter]
+        public  string? ClassSelect { set; get; }
+        [Parameter]
+        public string? ClassIcon { set; get; }
 
+        public static string KeyClassSelect { get; set; } = "classSelect";
+        public static string KeyClassIcon { get; set; } = "classIcon";
+
+        public readonly new static Dictionary<string, string> CLASSES = new Dictionary<string, string>()
+        {
+            {KeyClassItem, StyleBaseComponentCard.KeyClassItem },
+            {KeyClassContainer, StyleBaseComponentCard.KeyClassContainer },
+            {KeyClassSelect, "" },
+            {KeyClassIcon, "" },
+            { "classTextIcon", "" },
+            { "classCard", "" }
+
+
+        };
+        public override Task<bool> UpdateStyleAsync(Dictionary<string, string> classes)
+        {
+
+            if(ClassSelect == null)
+                ClassSelect = "";
+            if (ClassIcon == null)
+                ClassIcon = "";
+
+            if (classes == null || !IsIgnoredStyle)
+                return Task.FromResult(false);
+
+
+            ClassSelect += classes[KeyClassSelect];
+            ClassIcon += classes[KeyClassIcon];
+
+
+            return base.UpdateStyleAsync(classes);
+        }
+
+      
+    }
     public class ListDataVolumevoice : ComponentBaseCard<DataVolumevoice>
     {
         public override TypeComponentCard Type => throw new NotImplementedException();
 
+    
+
+
+
+        public   static ICollection<string>  NAMECLASSES => StyleListDataVolumevoice.CLASSES.Keys.ToList();
+
+
+     
+
+
+        public ListDataVolumevoice()
+        {
+
+           
+
+        }
         public override void Build(DataVolumevoice db)
         {
             DataBuild = db;
@@ -36,6 +93,10 @@ namespace dApp.Spectral
             instance.Build(data);
             return instance;
         }
+
+
+
+     
     }
     public class DataSmoothing
     {

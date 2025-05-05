@@ -1,43 +1,20 @@
-﻿@using dApp.Spectral
-@* 
+﻿@using LAHJA.Data.UI.Components.Base
+@using dApp.Spectral
+
+@inherits StyleListDataVolumevoice
+
+
+
  @if (Prams != null)
-{ 
- <div>
-    <label class="block text-sm font-medium text-gray-300 mb-1">FFT Size</label>
-
-    <select id="fftSize" class="w-full bg-gray-700 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none">
-        <option value="64">64</option>
-        <option value="128">128</option>
-        <option value="256" selected>256</option>
-        <option value="512">512</option>
-        <option value="1024">1024</option>
-        <option value="2048">2048</option>
-        <option value="4096">4096</option>
-    </select>
-    </div>
-    }
-
-@code {
-    [Parameter] public ListUnifiedModul? Prams { get; set; }
-
-    private void RemoveCommand(string command)
-    {
-        Prams?.DataBuild.Commands.Remove(command);
-        // إعادة التحديث أو الاستدعاء
-        StateHasChanged();
-    }
-}
-  *@
-   @if (Prams != null)
 {
-    <div>
-    <label class="block text-sm font-medium text-gray-300 mb-1">@Prams.DataBuild.Name</label>
+    <div class="@ClassContainer">
+    <label class="@ClassItem">@Prams.DataBuild.Name</label>
 
-    <select id="fftSize" class="w-full bg-gray-700 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none"
+        <select id="fftSize" class="@ClassSelect"
             @bind="@Prams.DataBuild.SelectedValue">
         @foreach (var size in Prams.DataBuild.Sizes)
     {
-        <option value="@size">@size</option>
+        <option class="@ClassIcon"  value="@size">@size</option>
     }
 </select>
 </div>
@@ -45,6 +22,19 @@
 @code {
     [Parameter] public ListDataVolumevoice? Prams { get; set; }
 
+
+    protected override async void OnInitialized()
+    {
+       // var classes = ListDataVolumevoice.CLASSES;
+        await UpdateStyleAsync(CLASSES);
+        base.OnInitialized();
+    }
+
+
+   
+    
+
+   
     
 }
 @* // [Parameter]
